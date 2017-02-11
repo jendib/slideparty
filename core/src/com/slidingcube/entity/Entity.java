@@ -1,24 +1,20 @@
-package com.slidingcube;
+package com.slidingcube.entity;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
-/**
- * @author bgamard.
- */
-
-abstract class Entity implements InputProcessor {
+public abstract class Entity implements InputProcessor {
     Body body;
 
     public abstract void render(Camera camera);
 
-    Body getBody() {
+    public Body getBody() {
         return body;
     }
 
-    Vector2 getPosition() {
+    public Vector2 getPosition() {
         return body.getPosition();
     }
 

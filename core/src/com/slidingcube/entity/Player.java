@@ -1,25 +1,18 @@
-package com.slidingcube;
+package com.slidingcube.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.TimeUtils;
 
-/**
- * @author bgamard.
- */
-
-class Player extends Entity {
+public class Player extends Entity {
     private boolean onGround = false;
-    private long lastJump;
     private float helpForce = 0;
     private int index;
 
-    Player(World world, int index) {
+    public Player(World world, int index) {
         this.index = index;
 
         BodyDef bodyDef = new BodyDef();
@@ -43,7 +36,7 @@ class Player extends Entity {
         boxShape.dispose();
     }
 
-    void setHelpForce(float helpForce) {
+    public void setHelpForce(float helpForce) {
         this.helpForce = helpForce;
     }
 
@@ -85,8 +78,7 @@ class Player extends Entity {
 
         if (applyForce && onGround) {
             onGround = false;
-            lastJump = TimeUtils.millis();
-            body.applyLinearImpulse(new Vector2(3000, 1500), body.getWorldCenter(), true);
+            body.applyLinearImpulse(new Vector2(2000, 2000), body.getWorldCenter(), true);
         }
         return applyForce;
     }

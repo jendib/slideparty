@@ -1,4 +1,4 @@
-package com.slidingcube;
+package com.slidingcube.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -13,15 +13,12 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.slidingcube.entity.Entity;
 
 import net.dermetfan.gdx.graphics.g2d.Box2DSprite;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * @author bgamard.
- */
 
 public class BaseScreen implements Screen, InputProcessor {
     private Box2DDebugRenderer debugRenderer;
