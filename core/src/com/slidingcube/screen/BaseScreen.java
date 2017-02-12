@@ -20,12 +20,16 @@ import com.slidingcube.entity.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import box2dLight.DirectionalLight;
+import box2dLight.RayHandler;
+
 public class BaseScreen implements Screen, InputProcessor {
     private Box2DDebugRenderer debugRenderer;
     protected World world; // box 2d world
     protected SpriteBatch batch; // projected on the camera matrix
     protected SpriteBatch uiBatch; // not projected
     protected OrthographicCamera camera; // 2d camera
+    private RayHandler rayHandler; // light rendering
     private List<Entity> entityList = new ArrayList<Entity>();
     private List<Actor> actorList = new ArrayList<Actor>();
 
@@ -45,9 +49,19 @@ public class BaseScreen implements Screen, InputProcessor {
         batch = new SpriteBatch();
         uiBatch = new SpriteBatch();
         camera = new OrthographicCamera();
-        debugRenderer = new Box2DDebugRenderer(true, true, false, true, true, true);
+        debugRenderer = new Box2DDebugRenderer(true, true, false, true, false, false);
         world = new World(new Vector2(0, -10f), true);
 
+        // lighting
+        RayHandler.setGammaCorrection(true);
+        RayHandler.useDiffuseLight(true);
+        rayHandler = new RayHandler(world);
+        rayHandler.setAmbientLight(0.5f, 0.5f, 0.5f, 0.1f);
+        rayHandler.setBlurNum(2);
+        DirectionalLight light = new DirectionalLight(rayHandler, 128, null, 225f);
+        light.setColor(1f, 1f, 1f, 1f);
+
+        // collision listener
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
@@ -81,13 +95,13 @@ public class BaseScreen implements Screen, InputProcessor {
 
             }
         });
-
         Gdx.input.setInputProcessor(this);
     }
 
     @Override
     public void render(float delta) {
         // clear the screen and step the world
+        Gdx.gl.glClearColor(0.05f, 0.05f, 0.05f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         world.step(1 / 60f, 8, 3);
 
@@ -101,6 +115,10 @@ public class BaseScreen implements Screen, InputProcessor {
 
         // box 2d debug rendering
         debugRenderer.render(world, camera.combined);
+
+        // render lights
+        rayHandler.setCombinedMatrix(camera);
+        rayHandler.updateAndRender();
 
         // draw the UI
         uiBatch.begin();
@@ -131,6 +149,7 @@ public class BaseScreen implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
+        rayHandler.dispose();
         batch.dispose();
         debugRenderer.dispose();
         world.dispose();

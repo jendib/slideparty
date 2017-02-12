@@ -76,7 +76,8 @@ public class GameScreen extends BaseScreen {
 
         // show the first player
         scoreLabel.setText("First player : " + firstPlayer.getIndex() + " at " + firstPlayer.getPosition().x + "/" + firstPlayer.getPosition().y + "\n"
-            + "Speed : " + firstPlayer.getBody().getLinearVelocity().len());
+            + "Speed : " + firstPlayer.getBody().getLinearVelocity().len() + "\n"
+            + "FPS : " + Gdx.graphics.getFramesPerSecond());
 
         // center the camera on the first player
         Vector3 cameraPosition = new Vector3(firstPlayer.getBody().getPosition(), 0);

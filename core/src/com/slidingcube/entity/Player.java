@@ -108,7 +108,7 @@ public class Player extends Entity {
         body.applyForceToCenter(velocity.nor().scl(- 2f * sqrtVelocity), true);
 
         // render the effect
-        //box2DSprite.draw(batch, body);
+        box2DSprite.draw(batch, body);
         Vector2 position = body.getWorldPoint(new Vector2(2f, - 3f));
         effect.setPosition(position.x, position.y);
         effect.draw(batch, delta);
