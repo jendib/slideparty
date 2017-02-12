@@ -13,19 +13,21 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.slidingcube.constant.ConfigConstants;
 import com.slidingcube.entity.Entity;
-
-import net.dermetfan.gdx.graphics.g2d.Box2DSprite;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BaseScreen implements Screen, InputProcessor {
     private Box2DDebugRenderer debugRenderer;
-    protected World world;
-    private SpriteBatch batch;
-    private OrthographicCamera camera;
+    protected World world; // box 2d world
+    protected SpriteBatch batch; // projected on the camera matrix
+    protected SpriteBatch uiBatch; // not projected
+    protected OrthographicCamera camera; // 2d camera
     private List<Entity> entityList = new ArrayList<Entity>();
+    private List<Actor> actorList = new ArrayList<Actor>();
 
     protected Entity addEntity(Entity entity) {
         entity.getBody().setUserData(entity);
@@ -33,9 +35,15 @@ public class BaseScreen implements Screen, InputProcessor {
         return entity;
     }
 
+    protected Actor addActor(Actor actor) {
+        actorList.add(actor);
+        return actor;
+    }
+
     @Override
     public void show() {
         batch = new SpriteBatch();
+        uiBatch = new SpriteBatch();
         camera = new OrthographicCamera();
         debugRenderer = new Box2DDebugRenderer(true, true, false, true, true, true);
         world = new World(new Vector2(0, -10f), true);
@@ -47,14 +55,20 @@ public class BaseScreen implements Screen, InputProcessor {
                 Object dataB = contact.getFixtureB().getBody().getUserData();
 
                 if (dataA instanceof Entity && dataB instanceof Entity) {
-                    ((Entity) dataA).onContact((Entity) dataB);
-                    ((Entity) dataB).onContact((Entity) dataA);
+                    ((Entity) dataA).onBeginContact((Entity) dataB, contact.getFixtureA(), contact);
+                    ((Entity) dataB).onBeginContact((Entity) dataA, contact.getFixtureB(), contact);
                 }
             }
 
             @Override
             public void endContact(Contact contact) {
+                Object dataA = contact.getFixtureA().getBody().getUserData();
+                Object dataB = contact.getFixtureB().getBody().getUserData();
 
+                if (dataA instanceof Entity && dataB instanceof Entity) {
+                    ((Entity) dataA).onEndContact((Entity) dataB, contact.getFixtureA(), contact);
+                    ((Entity) dataB).onEndContact((Entity) dataA, contact.getFixtureB(), contact);
+                }
             }
 
             @Override
@@ -73,27 +87,33 @@ public class BaseScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
+        // clear the screen and step the world
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         world.step(1 / 60f, 8, 3);
 
-        for (Entity entity : entityList) {
-            entity.render(camera);
-        }
-
+        // draw world entities
+        batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        Box2DSprite.draw(batch, world);
+        for (Entity entity : entityList) {
+            entity.render(camera, batch, delta);
+        }
         batch.end();
 
+        // box 2d debug rendering
         debugRenderer.render(world, camera.combined);
+
+        // draw the UI
+        uiBatch.begin();
+        for (Actor actor : actorList) {
+            actor.draw(uiBatch, 1f);
+        }
+        uiBatch.end();
     }
 
     @Override
     public void resize(int width, int height) {
-        camera.viewportWidth = width / 25;
-        camera.viewportHeight = height / 25;
+        camera.setToOrtho(false, width / ConfigConstants.PPM, height / ConfigConstants.PPM);
         camera.update();
-
-        batch.setProjectionMatrix(camera.combined);
     }
 
     @Override

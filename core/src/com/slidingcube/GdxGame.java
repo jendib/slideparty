@@ -2,13 +2,14 @@ package com.slidingcube;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.slidingcube.screen.GameScreen;
 
 class GdxGame extends Game {
 	private SpriteBatch batch;
 
 	public void create() {
 		batch = new SpriteBatch();
-		this.setScreen(new GameScreen());
+		this.setScreen(new GameScreen(4));
 	}
 
 	public void render() {

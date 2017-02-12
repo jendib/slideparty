@@ -1,54 +1,58 @@
 package com.slidingcube.screen;
 
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.ChainShape;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.flowpowered.noise.model.Line;
-import com.flowpowered.noise.module.source.Perlin;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Align;
+import com.slidingcube.entity.Ground;
 import com.slidingcube.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class GameScreen extends BaseScreen {
-    private Map<Integer, Player> playerMap = new HashMap<Integer, Player>();
+    private Map<Integer, Player> playerMap;
+    private int playerCount;
+    private Label scoreLabel;
+
+    public GameScreen(int playerCount) {
+        if (playerCount > 4) {
+            playerCount = 4;
+        }
+        playerMap = new HashMap<Integer, Player>();
+        this.playerCount = playerCount;
+    }
 
     @Override
     public void show() {
         super.show();
 
         // the ground
-        BodyDef bodyDef = new BodyDef();
-        FixtureDef fixtureDef = new FixtureDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        EdgeShape groundShape = new EdgeShape();
-        ChainShape chainShape = new ChainShape();
-
-        Line line = new Line(new Perlin());
-        int width = 1000;
-        int twidth = 1;
-        float[] chain = new float[width / twidth * 2];
-        for (int x = 0; x < width; x += twidth) {
-            chain[x / twidth * 2] = x;
-            chain[x / twidth * 2 + 1] = (float) line.getValue(x / (double) width) * 1000 - x / 10f - 1000;
-        }
-        chainShape.createChain(chain);
-
-        groundShape.set(-50, 10, 5000, -2000);
-        fixtureDef.shape = chainShape;
-        fixtureDef.restitution = 0;
-        fixtureDef.friction = 0f;
-        world.createBody(bodyDef).createFixture(fixtureDef);
-        groundShape.dispose();
-        chainShape.dispose();
+        Ground ground = new Ground(world);
+        addEntity(ground);
 
         // add players
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < playerCount; i++) {
             Player player = new Player(world, i);
             playerMap.put(i, player);
             addEntity(player);
         }
+
+        // label
+        Label.LabelStyle label1Style = new Label.LabelStyle();
+        label1Style.font = new BitmapFont(Gdx.files.internal("font/debug.fnt"),
+                Gdx.files.internal("font/debug.png"),
+                false, true);
+        label1Style.fontColor = Color.WHITE;
+
+        int rowHeight = Gdx.graphics.getWidth() / 12;
+        scoreLabel = new Label(null, label1Style);
+        scoreLabel.setSize(Gdx.graphics.getWidth(), rowHeight);
+        scoreLabel.setPosition(10, Gdx.graphics.getHeight() - rowHeight);
+        scoreLabel.setAlignment(Align.left);
+        addActor(scoreLabel);
     }
 
     @Override
@@ -69,5 +73,14 @@ public class GameScreen extends BaseScreen {
             Player player = entry.getValue();
             player.setHelpForce(firstPlayer.getPosition().x - player.getPosition().x);
         }
+
+        // show the first player
+        scoreLabel.setText("First player : " + firstPlayer.getIndex() + " at " + firstPlayer.getPosition().x + "/" + firstPlayer.getPosition().y + "\n"
+            + "Speed : " + firstPlayer.getBody().getLinearVelocity().len());
+
+        // center the camera on the first player
+        Vector3 cameraPosition = new Vector3(firstPlayer.getBody().getPosition(), 0);
+        camera.position.lerp(cameraPosition, delta * 2f);
+        camera.update();
     }
 }

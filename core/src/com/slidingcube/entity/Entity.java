@@ -2,13 +2,16 @@ package com.slidingcube.entity;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.Fixture;
 
 public abstract class Entity implements InputProcessor {
-    Body body;
+    protected Body body;
 
-    public abstract void render(Camera camera);
+    public abstract void render(Camera camera, Batch batch, float delta);
 
     public Body getBody() {
         return body;
@@ -59,5 +62,7 @@ public abstract class Entity implements InputProcessor {
         return false;
     }
 
-    public void onContact(Entity entity) {}
+    public void onBeginContact(Entity entity, Fixture fixture, Contact contact) {}
+
+    public void onEndContact(Entity entity, Fixture fixture, Contact contact) {}
 }
