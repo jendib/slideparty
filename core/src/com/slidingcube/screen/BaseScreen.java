@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -26,8 +27,9 @@ import box2dLight.RayHandler;
 public class BaseScreen implements Screen, InputProcessor {
     private Box2DDebugRenderer debugRenderer;
     protected World world; // box 2d world
-    protected SpriteBatch batch; // projected on the camera matrix
-    protected SpriteBatch uiBatch; // not projected
+    private SpriteBatch batch; // projected on the camera matrix
+    protected PolygonSpriteBatch polyBatch; // batch for polygons
+    private SpriteBatch uiBatch; // not projected
     protected OrthographicCamera camera; // 2d camera
     private RayHandler rayHandler; // light rendering
     private List<Entity> entityList = new ArrayList<Entity>();
@@ -48,16 +50,17 @@ public class BaseScreen implements Screen, InputProcessor {
     public void show() {
         batch = new SpriteBatch();
         uiBatch = new SpriteBatch();
+        polyBatch = new PolygonSpriteBatch();
         camera = new OrthographicCamera();
         debugRenderer = new Box2DDebugRenderer(true, true, false, true, false, false);
-        world = new World(new Vector2(0, -10f), true);
+        world = new World(new Vector2(0, ConfigConstants.GRAVITY), true);
 
         // lighting
         RayHandler.setGammaCorrection(true);
         RayHandler.useDiffuseLight(true);
         rayHandler = new RayHandler(world);
         rayHandler.setAmbientLight(0.5f, 0.5f, 0.5f, 0.1f);
-        rayHandler.setBlurNum(2);
+        rayHandler.setBlurNum(1);
         DirectionalLight light = new DirectionalLight(rayHandler, 128, null, 225f);
         light.setColor(1f, 1f, 1f, 1f);
 
@@ -101,11 +104,11 @@ public class BaseScreen implements Screen, InputProcessor {
     @Override
     public void render(float delta) {
         // clear the screen and step the world
-        Gdx.gl.glClearColor(0.05f, 0.05f, 0.05f, 1f);
+        Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         world.step(1 / 60f, 8, 3);
 
-        // draw world entities
+        // draw world entities using the classic batch
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         for (Entity entity : entityList) {
@@ -113,14 +116,22 @@ public class BaseScreen implements Screen, InputProcessor {
         }
         batch.end();
 
+        // draw world entities using the polygon batch
+        polyBatch.setProjectionMatrix(camera.combined);
+        polyBatch.begin();
+        for (Entity entity : entityList) {
+            entity.renderPolygon(camera, polyBatch, delta);
+        }
+        polyBatch.end();
+
         // box 2d debug rendering
-        debugRenderer.render(world, camera.combined);
+        //debugRenderer.render(world, camera.combined);
 
         // render lights
-        rayHandler.setCombinedMatrix(camera);
-        rayHandler.updateAndRender();
+        //rayHandler.setCombinedMatrix(camera);
+        //rayHandler.updateAndRender();
 
-        // draw the UI
+        // draw the UI using the UI batch
         uiBatch.begin();
         for (Actor actor : actorList) {
             actor.draw(uiBatch, 1f);

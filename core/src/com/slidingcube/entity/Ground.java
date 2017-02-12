@@ -1,16 +1,26 @@
 package com.slidingcube.entity;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
+import com.badlogic.gdx.graphics.g2d.PolygonSprite;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.ShortArray;
 import com.flowpowered.noise.model.Line;
 import com.flowpowered.noise.module.source.Perlin;
 import com.slidingcube.constant.ConfigConstants;
 
 public class Ground extends Entity {
+    private PolygonSprite polySprite;
+
     public Ground(World world) {
         BodyDef bodyDef = new BodyDef();
         FixtureDef fixtureDef = new FixtureDef();
@@ -20,11 +30,14 @@ public class Ground extends Entity {
         ChainShape chainShape = new ChainShape();
         Line line = new Line(new Perlin());
         int width = 1000;
-        int twidth = 1;
-        float[] chain = new float[width / twidth * 2];
-        for (int x = 0; x < width; x += twidth) {
-            chain[x / twidth * 2] = x;
-            chain[x / twidth * 2 + 1] = (float) line.getValue(x / (double) width) * 1000 - x / 10f - 1000;
+        float[] chain = new float[width * 2 + 4];
+        chain[0] = 0;
+        chain[1] = -120;
+        chain[width * 2 + 2] = width;
+        chain[width * 2 + 3] = -120;
+        for (int x = 0; x < width; x++) {
+            chain[x * 2 + 2] = x;
+            chain[x * 2 + 3] = (float) line.getValue(x / (double) width) * 1000 - x / 10f - 1000;
         }
         chainShape.createChain(chain);
 
@@ -34,10 +47,21 @@ public class Ground extends Entity {
         body = world.createBody(bodyDef);
         body.createFixture(fixtureDef);
         chainShape.dispose();
+
+
+        // Creating the color filling (but textures would work the same way)
+        Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pix.setColor(0x282828FF); // DE is red, AD is green and BE is blue.
+        pix.fill();
+        Texture textureSolid = new Texture(pix);
+        EarClippingTriangulator triangulator = new EarClippingTriangulator();
+        ShortArray triangleIndices = triangulator.computeTriangles(chain);
+        PolygonRegion polyReg = new PolygonRegion(new TextureRegion(textureSolid), chain, triangleIndices.toArray());
+        polySprite = new PolygonSprite(polyReg);
     }
 
     @Override
-    public void render(Camera camera, Batch batch, float delta) {
-
+    public void renderPolygon(Camera camera, PolygonSpriteBatch batch, float delta) {
+        polySprite.draw(batch);
     }
 }

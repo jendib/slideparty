@@ -2,8 +2,10 @@ package com.slidingcube.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -12,6 +14,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.slidingcube.constant.ConfigConstants;
 
@@ -27,6 +31,7 @@ public class Player extends Entity {
     private int index;
     private ParticleEffect effect;
     private Box2DSprite box2DSprite;
+    private Label label;
 
     public Player(World world, int index) {
         this.index = index;
@@ -60,7 +65,20 @@ public class Player extends Entity {
         effect.load(Gdx.files.internal("particle/snow.p"), Gdx.files.internal("particle"));
         effect.allowCompletion();
 
+        // player sprite
         box2DSprite = new Box2DSprite(new Texture(Gdx.files.internal("box.png")));
+
+        // label
+        Label.LabelStyle label1Style = new Label.LabelStyle();
+        label1Style.font = new BitmapFont(Gdx.files.internal("font/debug.fnt"),
+                Gdx.files.internal("font/debug.png"),
+                false, false);
+        label1Style.fontColor = Color.WHITE;
+        label = new Label(null, label1Style);
+        label.setSize(5f, 6f);
+        label.setFontScale(0.1f);
+        label.setAlignment(Align.center);
+        label.setText(Integer.toString(index + 1));
 
         boxShape.dispose();
     }
@@ -107,9 +125,15 @@ public class Player extends Entity {
         float sqrtVelocity = velocity.len2();
         body.applyForceToCenter(velocity.nor().scl(- 2f * sqrtVelocity), true);
 
-        // render the effect
+        // render the sprite
         box2DSprite.draw(batch, body);
+
+        // render the label
         Vector2 position = body.getWorldPoint(new Vector2(2f, - 3f));
+        label.setPosition(position.x - 4.5f, position.y);
+        label.draw(batch, 1f);
+
+        // render the effect
         effect.setPosition(position.x, position.y);
         effect.draw(batch, delta);
     }
