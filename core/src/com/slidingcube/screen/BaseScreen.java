@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -17,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.slidingcube.constant.ConfigConstants;
 import com.slidingcube.entity.Entity;
+import com.slidingcube.renderer.Box2DDebugRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +106,7 @@ public class BaseScreen implements Screen, InputProcessor {
         // clear the screen and step the world
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        world.step(1 / 60f, 8, 3);
+        world.step(1 / 60f, 8, 8);
 
         // draw world entities using the classic batch
         batch.setProjectionMatrix(camera.combined);
@@ -125,7 +125,7 @@ public class BaseScreen implements Screen, InputProcessor {
         polyBatch.end();
 
         // box 2d debug rendering
-        //debugRenderer.render(world, camera.combined);
+        debugRenderer.render(world, camera.combined);
 
         // render lights
         //rayHandler.setCombinedMatrix(camera);

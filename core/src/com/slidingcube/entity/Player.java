@@ -7,8 +7,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -21,11 +24,8 @@ import com.slidingcube.constant.ConfigConstants;
 
 import net.dermetfan.gdx.graphics.g2d.Box2DSprite;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class Player extends Entity {
-    private Set<Entity> walkingOnEntitySet = new HashSet<Entity>();
+    public int footContactCount;
     private long lastJump;
     private float helpForce = 0;
     private int index;
@@ -39,26 +39,48 @@ public class Player extends Entity {
         // player body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(20f, 8);
+        bodyDef.position.set(20f + 6 * index, 8);
         bodyDef.angularVelocity = 0;
         body = world.createBody(bodyDef);
+        body.setFixedRotation(true);
 
+        // top shape
         PolygonShape boxShape = new PolygonShape();
-        boxShape.setAsBox(2.5f, 3);
-
+        boxShape.setAsBox(2.5f, 0.3f, new Vector2(0,3), 0);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = boxShape;
         fixtureDef.density = ConfigConstants.PLAYER_DENSITY;
         fixtureDef.friction = 0;
         fixtureDef.restitution = .2f;
         body.createFixture(fixtureDef);
-        body.setFixedRotation(true);
+
+        // left shape
+        boxShape.setAsBox(2.7f, 0.3f, new Vector2(2.2f, 0), MathUtils.degreesToRadians * 90);
+        body.createFixture(fixtureDef);
+
+        // right shape
+        boxShape.setAsBox(2.7f, 0.3f, new Vector2(-2.2f, 0), MathUtils.degreesToRadians * 90);
+        body.createFixture(fixtureDef);
+
+        // bottom shape
+        boxShape.setAsBox(2.5f, 0.3f, new Vector2(0, -3), 0);
+        body.createFixture(fixtureDef);
 
         // player foot
-        boxShape.setAsBox(2.5f, 0.3f, new Vector2(0,-3), 0);
+        boxShape.setAsBox(2.5f, 0.3f, new Vector2(0, -3.3f), 0);
         fixtureDef.isSensor = true;
         Fixture footFixture = body.createFixture(fixtureDef);
         footFixture.setUserData(ConfigConstants.FIXTURE_FOOT);
+        boxShape.dispose();
+
+        // ball inside
+        CircleShape ballShape = new CircleShape();
+        ballShape.setRadius(1);
+        fixtureDef.isSensor = false;
+        fixtureDef.density = 0;
+        fixtureDef.shape = ballShape;
+        Body ball = world.createBody(bodyDef);
+        ball.createFixture(fixtureDef);
 
         // player effect
         effect = new ParticleEffect();
@@ -76,11 +98,10 @@ public class Player extends Entity {
         label1Style.fontColor = Color.WHITE;
         label = new Label(null, label1Style);
         label.setSize(5f, 6f);
-        label.setFontScale(0.1f);
+        label.setFontScale(0.05f);
         label.setAlignment(Align.center);
         label.setText(Integer.toString(index + 1));
 
-        boxShape.dispose();
     }
 
     public int getIndex() {
@@ -95,7 +116,7 @@ public class Player extends Entity {
     public void onBeginContact(Entity entity, Fixture fixture, Contact contact) {
         if (ConfigConstants.FIXTURE_FOOT == fixture.getUserData()) {
             // something touched our foot
-            walkingOnEntitySet.add(entity);
+            footContactCount++;
 
             if (entity instanceof Ground) {
                 effect.start();
@@ -107,7 +128,7 @@ public class Player extends Entity {
     public void onEndContact(Entity entity, Fixture fixture, Contact contact) {
         if (ConfigConstants.FIXTURE_FOOT == fixture.getUserData()) {
             // something stopped touching our foot
-            walkingOnEntitySet.remove(entity);
+            footContactCount--;
 
             if (entity instanceof Ground) {
                 effect.allowCompletion();
@@ -126,7 +147,7 @@ public class Player extends Entity {
         body.applyForceToCenter(velocity.nor().scl(- 2f * sqrtVelocity), true);
 
         // render the sprite
-        box2DSprite.draw(batch, body);
+        //box2DSprite.draw(batch, body);
 
         // render the label
         Vector2 position = body.getWorldPoint(new Vector2(2f, - 3f));
@@ -154,18 +175,18 @@ public class Player extends Entity {
         }
 
         long now = TimeUtils.millis();
-        if (applyForce && walkingOnEntitySet.size() > 0 && lastJump + ConfigConstants.JUMP_INTERVAL < now) {
+        if (applyForce && footContactCount > 0 && lastJump + ConfigConstants.JUMP_INTERVAL < now) {
             lastJump = now;
 
             // the player jump
             body.applyLinearImpulse(new Vector2(ConfigConstants.JUMP_HORIZONTAL, ConfigConstants.JUMP_VERTICAL),
                     body.getWorldCenter(), true);
 
-            // push entities below us
-            for (Entity entity : walkingOnEntitySet) {
+            // TODO push entities below us
+            /*for (Entity entity : walkingOnEntitySet) {
                 entity.getBody().applyLinearImpulse(new Vector2(0, ConfigConstants.JUMP_PUSH),
                         entity.getBody().getWorldCenter(), true);
-            }
+            }*/
         }
         return applyForce;
     }

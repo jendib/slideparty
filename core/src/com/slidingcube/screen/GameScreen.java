@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
+import com.slidingcube.constant.ConfigConstants;
 import com.slidingcube.entity.Ground;
 import com.slidingcube.entity.Player;
 
@@ -47,7 +48,7 @@ public class GameScreen extends BaseScreen {
                 false, true);
         label1Style.fontColor = Color.WHITE;
 
-        int rowHeight = Gdx.graphics.getWidth() / 12;
+        int rowHeight = Gdx.graphics.getWidth() / 8;
         scoreLabel = new Label(null, label1Style);
         scoreLabel.setSize(Gdx.graphics.getWidth(), rowHeight);
         scoreLabel.setPosition(10, Gdx.graphics.getHeight() - rowHeight);
@@ -71,17 +72,18 @@ public class GameScreen extends BaseScreen {
         // help the latest players
         for (Map.Entry<Integer, Player> entry : playerMap.entrySet()) {
             Player player = entry.getValue();
-            player.setHelpForce(firstPlayer.getPosition().x - player.getPosition().x);
+            player.setHelpForce((firstPlayer.getPosition().x - player.getPosition().x) * ConfigConstants.HELP_FORCE);
         }
 
         // show the first player
         scoreLabel.setText("First player : " + firstPlayer.getIndex() + " at " + firstPlayer.getPosition().x + "/" + firstPlayer.getPosition().y + "\n"
             + "Speed : " + firstPlayer.getBody().getLinearVelocity().len() + "\n"
-            + "FPS : " + Gdx.graphics.getFramesPerSecond());
+            + "FPS : " + Gdx.graphics.getFramesPerSecond() + "\n"
+            + "On Ground : " + firstPlayer.footContactCount);
 
         // center the camera on the first player
         Vector3 cameraPosition = new Vector3(firstPlayer.getBody().getPosition(), 0);
-        camera.position.lerp(cameraPosition, delta * 2f);
+        camera.position.lerp(cameraPosition, delta * 10f);
         camera.update();
     }
 }
