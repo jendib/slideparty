@@ -18,6 +18,8 @@ import com.flowpowered.noise.model.Line;
 import com.flowpowered.noise.module.source.Perlin;
 import com.slidingcube.constant.ConfigConstants;
 
+import java.util.Random;
+
 public class Ground extends Entity {
     private PolygonSprite polySprite;
 
@@ -28,16 +30,18 @@ public class Ground extends Entity {
 
         // generate ground line
         ChainShape chainShape = new ChainShape();
-        Line line = new Line(new Perlin());
+        Perlin perlin = new Perlin();
+        perlin.setSeed(new Random().nextInt());
+        Line line = new Line(perlin);
         int width = 1000;
         float[] chain = new float[width * 2 + 4];
         chain[0] = 0;
-        chain[1] = -120;
+        chain[1] = -1200;
         chain[width * 2 + 2] = width;
-        chain[width * 2 + 3] = -120;
+        chain[width * 2 + 3] = -1200;
         for (int x = 0; x < width; x++) {
             chain[x * 2 + 2] = x;
-            chain[x * 2 + 3] = (float) line.getValue(x / (double) width) * 1000 - x / 10f - 1000;
+            chain[x * 2 + 3] = (float) line.getValue(x / (double) width) * 1000 - x / 2f - 1000;
         }
         chainShape.createChain(chain);
 

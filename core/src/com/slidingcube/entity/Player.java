@@ -39,7 +39,7 @@ public class Player extends Entity {
         // player body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(4f, 8);
+        bodyDef.position.set(20f, 8);
         bodyDef.angularVelocity = 0;
         body = world.createBody(bodyDef);
 
@@ -48,14 +48,14 @@ public class Player extends Entity {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = boxShape;
-        fixtureDef.density = 5;
+        fixtureDef.density = ConfigConstants.PLAYER_DENSITY;
         fixtureDef.friction = 0;
         fixtureDef.restitution = .2f;
         body.createFixture(fixtureDef);
         body.setFixedRotation(true);
 
         // player foot
-        boxShape.setAsBox(2.3f, 0.3f, new Vector2(0,-3), 0);
+        boxShape.setAsBox(2.5f, 0.3f, new Vector2(0,-3), 0);
         fixtureDef.isSensor = true;
         Fixture footFixture = body.createFixture(fixtureDef);
         footFixture.setUserData(ConfigConstants.FIXTURE_FOOT);
