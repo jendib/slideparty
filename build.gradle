@@ -11,9 +11,6 @@ buildscript {
 }
 
 allprojects {
-    apply plugin: "eclipse"
-    apply plugin: "idea"
-
     version = '1.0'
     ext {
         appName = "slidingcube"
@@ -57,7 +54,6 @@ project(":android") {
 project(":core") {
     apply plugin: "java"
 
-
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
@@ -66,8 +62,4 @@ project(":core") {
         compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:0.13.4"
         compile 'com.flowpowered:flow-noise:1.0.1-SNAPSHOT'
     }
-}
-
-tasks.eclipse.doLast {
-    delete ".project"
 }

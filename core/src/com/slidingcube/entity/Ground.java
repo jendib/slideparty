@@ -23,7 +23,7 @@ import java.util.Random;
 public class Ground extends Entity {
     private PolygonSprite polySprite;
 
-    public Ground(World world) {
+    public Ground(World world, int width) {
         BodyDef bodyDef = new BodyDef();
         FixtureDef fixtureDef = new FixtureDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
@@ -33,7 +33,6 @@ public class Ground extends Entity {
         Perlin perlin = new Perlin();
         perlin.setSeed(new Random().nextInt());
         Line line = new Line(perlin);
-        int width = 1000;
         float[] chain = new float[width * 2 + 4];
         chain[0] = 0;
         chain[1] = -1200;

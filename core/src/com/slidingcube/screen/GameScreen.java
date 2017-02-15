@@ -10,11 +10,15 @@ import com.slidingcube.constant.ConfigConstants;
 import com.slidingcube.entity.Ground;
 import com.slidingcube.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 public class GameScreen extends BaseScreen {
-    private Map<Integer, Player> playerMap;
+    private List<Player> playerList;
     private int playerCount;
     private Label scoreLabel;
 
@@ -22,22 +26,23 @@ public class GameScreen extends BaseScreen {
         if (playerCount > 4) {
             playerCount = 4;
         }
-        playerMap = new HashMap<Integer, Player>();
+        playerList = new ArrayList<>(playerCount);
         this.playerCount = playerCount;
     }
 
     @Override
     public void show() {
         super.show();
+        playerList.clear();
 
         // the ground
-        Ground ground = new Ground(world);
+        Ground ground = new Ground(world, ConfigConstants.GROUND_WIDTH);
         addEntity(ground);
 
         // add players
         for (int i = 0; i < playerCount; i++) {
             Player player = new Player(world, i);
-            playerMap.put(i, player);
+            playerList.add(player);
             addEntity(player);
         }
 
@@ -60,23 +65,34 @@ public class GameScreen extends BaseScreen {
     public void render(float delta) {
         super.render(delta);
 
+        // sort players
+        NavigableMap<Float, Player> sortedPlayerIndex = new TreeMap<>();
+        for (Player player : playerList) {
+            sortedPlayerIndex.put(player.getPosition().x, player);
+        }
+
         // compute the first player
-        Player firstPlayer = playerMap.entrySet().iterator().next().getValue();
-        for (Map.Entry<Integer, Player> entry : playerMap.entrySet()) {
-            Player player = entry.getValue();
-            if (player.getPosition().x > firstPlayer.getPosition().x) {
-                firstPlayer = player;
+        Player firstPlayer = null;
+        for (Map.Entry<Float, Player> entry : sortedPlayerIndex.entrySet()) {
+            if (entry.getKey() < ConfigConstants.GROUND_WIDTH) {
+                firstPlayer = entry.getValue();
             }
         }
 
+        // all players are arrived
+        if (firstPlayer == null) {
+            next.run();
+            return;
+        }
+
         // help the latest players
-        for (Map.Entry<Integer, Player> entry : playerMap.entrySet()) {
+        for (Map.Entry<Float, Player> entry : sortedPlayerIndex.entrySet()) {
             Player player = entry.getValue();
-            player.setHelpForce((firstPlayer.getPosition().x - player.getPosition().x) * ConfigConstants.HELP_FORCE);
+            player.setHelpForce((firstPlayer.getPosition().x - entry.getKey()) * ConfigConstants.HELP_FORCE);
         }
 
         // show the first player
-        scoreLabel.setText("First player : " + firstPlayer.getIndex() + " at " + firstPlayer.getPosition().x + "/" + firstPlayer.getPosition().y + "\n"
+        scoreLabel.setText("First player : " + (firstPlayer.getIndex() + 1) + " at " + firstPlayer.getPosition().x + "/" + firstPlayer.getPosition().y + "\n"
             + "Speed : " + firstPlayer.getBody().getLinearVelocity().len() + "\n"
             + "FPS : " + Gdx.graphics.getFramesPerSecond() + "\n"
             + "On Ground : " + firstPlayer.footContactCount);

@@ -32,8 +32,13 @@ public class BaseScreen implements Screen, InputProcessor {
     private SpriteBatch uiBatch; // not projected
     protected OrthographicCamera camera; // 2d camera
     private RayHandler rayHandler; // light rendering
-    private List<Entity> entityList = new ArrayList<Entity>();
-    private List<Actor> actorList = new ArrayList<Actor>();
+    private List<Entity> entityList = new ArrayList<>();
+    private List<Actor> actorList = new ArrayList<>();
+    protected Runnable next;
+
+    public void setNext(Runnable next) {
+        this.next = next;
+    }
 
     protected Entity addEntity(Entity entity) {
         entity.getBody().setUserData(entity);
@@ -48,6 +53,8 @@ public class BaseScreen implements Screen, InputProcessor {
 
     @Override
     public void show() {
+        entityList.clear();
+        actorList.clear();
         batch = new SpriteBatch();
         uiBatch = new SpriteBatch();
         polyBatch = new PolygonSpriteBatch();
@@ -166,6 +173,8 @@ public class BaseScreen implements Screen, InputProcessor {
         world.dispose();
         Gdx.input.setInputProcessor(null);
     }
+
+    // InputProcessor
 
     @Override
     public boolean keyDown(int keycode) {
