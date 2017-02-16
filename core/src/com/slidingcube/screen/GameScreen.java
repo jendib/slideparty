@@ -3,6 +3,8 @@ package com.slidingcube.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.GeometryUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
@@ -66,9 +68,15 @@ public class GameScreen extends BaseScreen {
         super.render(delta);
 
         // sort players
+        float sumX = 0;
+        float sumY = 0;
         NavigableMap<Float, Player> sortedPlayerIndex = new TreeMap<>();
-        for (Player player : playerList) {
-            sortedPlayerIndex.put(player.getPosition().x, player);
+        for (int i = 0; i < playerList.size(); i++) {
+            Player player = playerList.get(i);
+            Vector2 position = player.getPosition();
+            sortedPlayerIndex.put(position.x, player);
+            sumX += position.x;
+            sumY += position.y;
         }
 
         // compute the first player
@@ -91,15 +99,54 @@ public class GameScreen extends BaseScreen {
             player.setHelpForce((firstPlayer.getPosition().x - entry.getKey()) * ConfigConstants.HELP_FORCE);
         }
 
-        // show the first player
-        scoreLabel.setText("First player : " + (firstPlayer.getIndex() + 1) + " at " + firstPlayer.getPosition().x + "/" + firstPlayer.getPosition().y + "\n"
-            + "Speed : " + firstPlayer.getBody().getLinearVelocity().len() + "\n"
-            + "FPS : " + Gdx.graphics.getFramesPerSecond() + "\n"
-            + "On Ground : " + firstPlayer.footContactCount);
+        // camera position
+        camera.position.set(sumX / playerList.size(), sumY / playerList.size(), 0);
 
-        // center the camera on the first player
-        Vector3 cameraPosition = new Vector3(firstPlayer.getBody().getPosition(), 0);
-        camera.position.lerp(cameraPosition, delta * 10f);
+        // camera viewport
+        float[] bbPlayers = getPlayerBoundingBox();
+        float aspectRatio = (float) Gdx.graphics.getHeight() / (float) Gdx.graphics.getWidth(); // 0.5625 for 16:9 screen
+        float width = Math.abs(bbPlayers[0] - bbPlayers[2]) * 2f // base viewport
+                + Gdx.graphics.getWidth() * ConfigConstants.CAMERA_MARGIN; // add some margin
+        float height = Math.abs(bbPlayers[1] - bbPlayers[3]) * 2f // base viewport
+                + Gdx.graphics.getHeight() * ConfigConstants.CAMERA_MARGIN; // add some margin
+        if (width * aspectRatio > height) {
+            camera.viewportWidth = width;
+            camera.viewportHeight = width * aspectRatio;
+        } else {
+            camera.viewportWidth = height * (1 / aspectRatio);
+            camera.viewportHeight = height;
+        }
         camera.update();
+
+        // debug info
+        scoreLabel.setText("First player : " + (firstPlayer.getIndex() + 1) + " at " + firstPlayer.getPosition().x + "/" + firstPlayer.getPosition().y + "\n"
+                + "Speed : " + firstPlayer.getBody().getLinearVelocity().len() + "\n"
+                + "FPS : " + Gdx.graphics.getFramesPerSecond());
+    }
+
+    /**
+     * Returns players bounding box array.
+     *
+     * @return array of the bounding box coordinates (x1,y1,x2,y2)
+     */
+    private float[] getPlayerBoundingBox() {
+        float[] output = new float[] { Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
+                Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY };
+        for (Player player : playerList) {
+            Vector2 position = player.getPosition();
+            if (position.x < output[0]) {
+                output[0] = position.x;
+            }
+            if (position.y < output[1]) {
+                output[1] = position.y;
+            }
+            if (position.x > output[2]) {
+                output[2] = position.x;
+            }
+            if (position.y > output[3]) {
+                output[3] = position.y;
+            }
+        }
+        return output;
     }
 }

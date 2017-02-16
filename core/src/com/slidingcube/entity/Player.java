@@ -42,7 +42,6 @@ public class Player extends Entity {
         bodyDef.position.set(20f + 6 * index, 8);
         bodyDef.angularVelocity = 0;
         body = world.createBody(bodyDef);
-        body.setFixedRotation(true);
 
         // top shape
         PolygonShape boxShape = new PolygonShape();
@@ -67,8 +66,9 @@ public class Player extends Entity {
         body.createFixture(fixtureDef);
 
         // player foot
-        boxShape.setAsBox(2.5f, 0.3f, new Vector2(0, -3.3f), 0);
+        boxShape.setAsBox(3.6f, 4.2f);
         fixtureDef.isSensor = true;
+        fixtureDef.density = 0; // the foot don't weight anything
         Fixture footFixture = body.createFixture(fixtureDef);
         footFixture.setUserData(ConfigConstants.FIXTURE_FOOT);
         boxShape.dispose();
@@ -155,7 +155,7 @@ public class Player extends Entity {
         label.draw(batch, 1f);
 
         // render the effect
-        effect.setPosition(position.x, position.y);
+        effect.setPosition(position.x, position.y); // TODO The effect must be on ground contact point
         effect.draw(batch, delta);
     }
 
