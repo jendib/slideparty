@@ -1,28 +1,32 @@
 package com.slidingcube.constant;
 
 /**
- * @author bgamard.
+ * Configuration constants.
+ *
+ * @author bgamard
  */
-
 public class ConfigConstants {
     private ConfigConstants() {
         // private class
     }
 
-    public static float GRAVITY = -20f;
-    public static float PPM = 25;
-    public static float CAMERA_MARGIN = 0.02f;
+    public static final boolean DEBUG = true; // debug mode
 
-    public static float GROUND_FRICTION = 0.1f;
-    public static int GROUND_WIDTH = 1000;
+    public static float GRAVITY = -20f; // world gravity in m/s²
+    public static float PPM = 25; // camera viewport initial zoom
+    public static float HORIZONTAL_CAMERA_MARGIN = 0.02f; // horizontal margin factor between screen and players
+    public static float VERTICAL_CAMERA_MARGIN = 0f; // vertical margin factor between screen and players
 
-    public static float HELP_FORCE_MULTIPLIER = 100f;
-    public static float JUMP_VERTICAL = 4000f;
-    public static float JUMP_HORIZONTAL = 4000f;
-    public static int JUMP_INTERVAL = 400;
-    public static final float PLAYER_DENSITY = 20f;
-    public static final float HELP_FORCE = 0.5f;
-    public static float JUMP_PUSH = -500f;
+    public static float GROUND_FRICTION = 0.1f; // ground friction
+    public static int GROUND_WIDTH = 1000; // ground width
 
-    public static Integer FIXTURE_FOOT = 0;
+    public static float HELP_FORCE_MULTIPLIER = 100f; // help force factor
+    public static float JUMP_VERTICAL = 4000f; // vertical jump force in N
+    public static float JUMP_HORIZONTAL = 4000f; // horizontal jump force in N
+    public static int JUMP_INTERVAL = 400; // minimum time between 2 jumps
+    public static final float PLAYER_DENSITY = 20f; // player density
+    public static final float HELP_FORCE = 0.5f; // help force multiplier
+    public static float JUMP_PUSH = -500f; // downward push when a player jump on another in N
+
+    public static Integer FIXTURE_FOOT_ID = 0; // foot fixture ID
 }

@@ -1,9 +1,7 @@
 package com.slidingcube.entity;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
@@ -20,9 +18,20 @@ import com.slidingcube.constant.ConfigConstants;
 
 import java.util.Random;
 
+/**
+ * The ground entity.
+ *
+ * @author bgamard
+ */
 public class Ground extends Entity {
-    private PolygonSprite polySprite;
+    private PolygonSprite polySprite; // Sprite to draw the ground
 
+    /**
+     * Create a new ground.
+     *
+     * @param world Box 2D world
+     * @param width Width of the ground
+     */
     public Ground(World world, int width) {
         BodyDef bodyDef = new BodyDef();
         FixtureDef fixtureDef = new FixtureDef();
@@ -44,6 +53,7 @@ public class Ground extends Entity {
         }
         chainShape.createChain(chain);
 
+        // ground body
         fixtureDef.shape = chainShape;
         fixtureDef.restitution = 0;
         fixtureDef.friction = ConfigConstants.GROUND_FRICTION;
@@ -51,10 +61,9 @@ public class Ground extends Entity {
         body.createFixture(fixtureDef);
         chainShape.dispose();
 
-
-        // Creating the color filling (but textures would work the same way)
+        // creating the color filling
         Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pix.setColor(0x282828FF); // DE is red, AD is green and BE is blue.
+        pix.setColor(0x282828FF);
         pix.fill();
         Texture textureSolid = new Texture(pix);
         EarClippingTriangulator triangulator = new EarClippingTriangulator();
@@ -64,7 +73,7 @@ public class Ground extends Entity {
     }
 
     @Override
-    public void renderPolygon(Camera camera, PolygonSpriteBatch batch, float delta) {
+    public void renderPolygon(PolygonSpriteBatch batch, float delta) {
         polySprite.draw(batch);
     }
 }

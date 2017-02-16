@@ -6,6 +6,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 
+/**
+ * First home screen.
+ *
+ * @author bgamard
+ */
 public class HomeScreen extends BaseScreen {
     @Override
     public void show() {

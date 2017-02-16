@@ -1,7 +1,6 @@
 package com.slidingcube.entity;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -24,15 +23,29 @@ import com.slidingcube.constant.ConfigConstants;
 
 import net.dermetfan.gdx.graphics.g2d.Box2DSprite;
 
+/**
+ * The player entity.
+ *
+ * @author bgamard
+ */
 public class Player extends Entity {
-    public int footContactCount;
-    private long lastJump;
-    private float helpForce = 0;
-    private int index;
-    private ParticleEffect effect;
-    private Box2DSprite box2DSprite;
-    private Label label;
+    public int footContactCount; // Number of contact with the ground
+    private long lastJumpTime; // Last jump time
+    private float helpForce = 0; // Help force
+    private int index; // Index of this player
+    private ParticleEffect effect; // Ground particles effect
+    private Box2DSprite box2DSprite; // Player sprite
+    private Label label; // Index label
 
+    private transient Vector2 helpForceVector = new Vector2(); // Help force vector
+    private transient Vector2 labelPositionVector = new Vector2(2f, - 3f); // Position of the label
+
+    /**
+     * Create a new player.
+     *
+     * @param world Box 2D world
+     * @param index Player index
+     */
     public Player(World world, int index) {
         this.index = index;
 
@@ -70,14 +83,14 @@ public class Player extends Entity {
         fixtureDef.isSensor = true;
         fixtureDef.density = 0; // the foot don't weight anything
         Fixture footFixture = body.createFixture(fixtureDef);
-        footFixture.setUserData(ConfigConstants.FIXTURE_FOOT);
+        footFixture.setUserData(ConfigConstants.FIXTURE_FOOT_ID);
         boxShape.dispose();
 
         // ball inside
         CircleShape ballShape = new CircleShape();
         ballShape.setRadius(1);
         fixtureDef.isSensor = false;
-        fixtureDef.density = 0;
+        fixtureDef.density = 0; // the ball don't weight anything
         fixtureDef.shape = ballShape;
         Body ball = world.createBody(bodyDef);
         ball.createFixture(fixtureDef);
@@ -104,17 +117,27 @@ public class Player extends Entity {
 
     }
 
+    /**
+     * Returns the player index.
+     *
+     * @return Player index
+     */
     public int getIndex() {
         return index;
     }
 
+    /**
+     * Set the base help force.
+     *
+     * @param helpForce Help force
+     */
     public void setHelpForce(float helpForce) {
         this.helpForce = helpForce;
     }
 
     @Override
     public void onBeginContact(Entity entity, Fixture fixture, Contact contact) {
-        if (ConfigConstants.FIXTURE_FOOT == fixture.getUserData()) {
+        if (ConfigConstants.FIXTURE_FOOT_ID == fixture.getUserData()) {
             // something touched our foot
             footContactCount++;
 
@@ -126,7 +149,7 @@ public class Player extends Entity {
 
     @Override
     public void onEndContact(Entity entity, Fixture fixture, Contact contact) {
-        if (ConfigConstants.FIXTURE_FOOT == fixture.getUserData()) {
+        if (ConfigConstants.FIXTURE_FOOT_ID == fixture.getUserData()) {
             // something stopped touching our foot
             footContactCount--;
 
@@ -137,9 +160,10 @@ public class Player extends Entity {
     }
 
     @Override
-    public void render(Camera camera, Batch batch, float delta) {
+    public void render(Batch batch, float delta) {
         // help the last
-        body.applyForceToCenter(new Vector2(helpForce * ConfigConstants.HELP_FORCE_MULTIPLIER, 0), true);
+        helpForceVector.x = helpForce * ConfigConstants.HELP_FORCE_MULTIPLIER;
+        body.applyForceToCenter(helpForceVector, true);
 
         // apply air drag
         Vector2 velocity = body.getLinearVelocity();
@@ -150,7 +174,7 @@ public class Player extends Entity {
         //box2DSprite.draw(batch, body);
 
         // render the label
-        Vector2 position = body.getWorldPoint(new Vector2(2f, - 3f));
+        Vector2 position = body.getWorldPoint(labelPositionVector);
         label.setPosition(position.x - 4.5f, position.y);
         label.draw(batch, 1f);
 
@@ -175,8 +199,8 @@ public class Player extends Entity {
         }
 
         long now = TimeUtils.millis();
-        if (applyForce && footContactCount > 0 && lastJump + ConfigConstants.JUMP_INTERVAL < now) {
-            lastJump = now;
+        if (applyForce && footContactCount > 0 && lastJumpTime + ConfigConstants.JUMP_INTERVAL < now) {
+            lastJumpTime = now;
 
             // the player jump
             body.applyLinearImpulse(new Vector2(ConfigConstants.JUMP_HORIZONTAL, ConfigConstants.JUMP_VERTICAL),

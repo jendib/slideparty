@@ -25,6 +25,11 @@ import com.badlogic.gdx.utils.Disposable;
 
 import java.util.Iterator;
 
+/**
+ * Overridden Box 2D debug renderer to add more vertices.
+ *
+ * @author bgamard
+ */
 public class Box2DDebugRenderer implements Disposable {
 
     /** the immediate mode renderer to output our debug drawings **/

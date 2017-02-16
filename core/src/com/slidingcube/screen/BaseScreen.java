@@ -24,28 +24,50 @@ import java.util.List;
 import box2dLight.DirectionalLight;
 import box2dLight.RayHandler;
 
+/**
+ * Base game screen.
+ *
+ * @author bgamard
+ */
 public class BaseScreen implements Screen, InputProcessor {
-    private Box2DDebugRenderer debugRenderer;
+    private Box2DDebugRenderer debugRenderer; // box 2d debug renderer
     protected World world; // box 2d world
-    private SpriteBatch batch; // projected on the camera matrix
-    protected PolygonSpriteBatch polyBatch; // batch for polygons
-    private SpriteBatch uiBatch; // not projected
+    private SpriteBatch batch; // batch projected on the camera matrix
+    private PolygonSpriteBatch polyBatch; // batch for polygons
+    private SpriteBatch uiBatch; // batch not projected
     protected OrthographicCamera camera; // 2d camera
     private RayHandler rayHandler; // light rendering
-    private List<Entity> entityList = new ArrayList<>();
-    private List<Actor> actorList = new ArrayList<>();
-    protected Runnable next;
+    private List<Entity> entityList = new ArrayList<>(); // physic entities tracked in the scene
+    private List<Actor> actorList = new ArrayList<>(); // actors tracked in the scene
+    protected Runnable next; // Action to do when the scene ends. Subclasses are responsible for the call
 
+    /**
+     * Set the action to do when this screen ends.
+     *
+     * @param next Runnable
+     */
     public void setNext(Runnable next) {
         this.next = next;
     }
 
+    /**
+     * Add a new physic entity to the scene.
+     *
+     * @param entity Physic entity
+     * @return The entity
+     */
     protected Entity addEntity(Entity entity) {
         entity.getBody().setUserData(entity);
         entityList.add(entity);
         return entity;
     }
 
+    /**
+     * Add a new actor to the scene.
+     *
+     * @param actor Actor
+     * @return The actor
+     */
     protected Actor addActor(Actor actor) {
         actorList.add(actor);
         return actor;
@@ -59,7 +81,9 @@ public class BaseScreen implements Screen, InputProcessor {
         uiBatch = new SpriteBatch();
         polyBatch = new PolygonSpriteBatch();
         camera = new OrthographicCamera();
-        debugRenderer = new Box2DDebugRenderer(true, true, false, true, false, false);
+        if (ConfigConstants.DEBUG) {
+            debugRenderer = new Box2DDebugRenderer(true, true, false, true, false, false);
+        }
         world = new World(new Vector2(0, ConfigConstants.GRAVITY), true);
 
         // lighting
@@ -119,7 +143,7 @@ public class BaseScreen implements Screen, InputProcessor {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         for (Entity entity : entityList) {
-            entity.render(camera, batch, delta);
+            entity.render(batch, delta);
         }
         batch.end();
 
@@ -127,12 +151,14 @@ public class BaseScreen implements Screen, InputProcessor {
         polyBatch.setProjectionMatrix(camera.combined);
         polyBatch.begin();
         for (Entity entity : entityList) {
-            entity.renderPolygon(camera, polyBatch, delta);
+            entity.renderPolygon(polyBatch, delta);
         }
         polyBatch.end();
 
-        // box 2d debug rendering
-        debugRenderer.render(world, camera.combined);
+        if (ConfigConstants.DEBUG) {
+            // box 2d debug rendering
+            debugRenderer.render(world, camera.combined);
+        }
 
         // render lights
         //rayHandler.setCombinedMatrix(camera);
