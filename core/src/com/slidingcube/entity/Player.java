@@ -34,6 +34,7 @@ public class Player extends Entity {
     private float helpForce = 0; // Help force
     private int index; // Index of this player
     private ParticleEffect effect; // Ground particles effect
+    private Vector2 groundContactPosition; // Contact between the player and the ground
     private Box2DSprite box2DSprite; // Player sprite
     private Label label; // Index label
 
@@ -140,9 +141,13 @@ public class Player extends Entity {
         if (ConfigConstants.FIXTURE_FOOT_ID == fixture.getUserData()) {
             // something touched our foot
             footContactCount++;
-
+        } else {
             if (entity instanceof Ground) {
+                // the actual player is touching the ground, show some particles
                 effect.start();
+                if (contact.getWorldManifold().getNumberOfContactPoints()> 0) {
+                    groundContactPosition = contact.getWorldManifold().getPoints()[0];
+                }
             }
         }
     }
@@ -152,7 +157,8 @@ public class Player extends Entity {
         if (ConfigConstants.FIXTURE_FOOT_ID == fixture.getUserData()) {
             // something stopped touching our foot
             footContactCount--;
-
+        } else {
+            // the actual player stopped touching the ground
             if (entity instanceof Ground) {
                 effect.allowCompletion();
             }
@@ -171,7 +177,7 @@ public class Player extends Entity {
         body.applyForceToCenter(velocity.nor().scl(- 2f * sqrtVelocity), true);
 
         // render the sprite
-        //box2DSprite.draw(batch, body);
+        // box2DSprite.draw(batch, body);
 
         // render the label
         Vector2 position = body.getWorldPoint(labelPositionVector);
@@ -179,8 +185,10 @@ public class Player extends Entity {
         label.draw(batch, 1f);
 
         // render the effect
-        effect.setPosition(position.x, position.y); // TODO The effect must be on ground contact point
-        effect.draw(batch, delta);
+        if (groundContactPosition != null) {
+            effect.setPosition(groundContactPosition.x, groundContactPosition.y);
+            effect.draw(batch, delta);
+        }
     }
 
     @Override
