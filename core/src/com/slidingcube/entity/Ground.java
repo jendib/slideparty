@@ -1,10 +1,12 @@
 package com.slidingcube.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.RepeatablePolygonSprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -24,7 +26,7 @@ import java.util.Random;
  * @author bgamard
  */
 public class Ground extends Entity {
-    private PolygonSprite polySprite; // Sprite to draw the ground
+    private RepeatablePolygonSprite polySprite; // Sprite to draw the ground
 
     /**
      * Create a new ground.
@@ -38,15 +40,16 @@ public class Ground extends Entity {
         bodyDef.type = BodyDef.BodyType.StaticBody;
 
         // generate ground line
+        float height = 1200;
         ChainShape chainShape = new ChainShape();
         Perlin perlin = new Perlin();
         perlin.setSeed(new Random().nextInt());
         Line line = new Line(perlin);
         float[] chain = new float[width * 2 + 4];
         chain[0] = 0;
-        chain[1] = -1200;
+        chain[1] = - height;
         chain[width * 2 + 2] = width;
-        chain[width * 2 + 3] = -1200;
+        chain[width * 2 + 3] = - height;
         for (int x = 0; x < width; x++) {
             chain[x * 2 + 2] = x;
             chain[x * 2 + 3] = (float) line.getValue(x / (double) width) * 1000 - x / 2f - 1000;
@@ -61,15 +64,12 @@ public class Ground extends Entity {
         body.createFixture(fixtureDef);
         chainShape.dispose();
 
-        // creating the color filling
-        Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pix.setColor(0x282828FF);
-        pix.fill();
-        Texture textureSolid = new Texture(pix);
-        EarClippingTriangulator triangulator = new EarClippingTriangulator();
-        ShortArray triangleIndices = triangulator.computeTriangles(chain);
-        PolygonRegion polyReg = new PolygonRegion(new TextureRegion(textureSolid), chain, triangleIndices.toArray());
-        polySprite = new PolygonSprite(polyReg);
+        // texture filling
+        Texture texture = new Texture(Gdx.files.internal("snow.jpg"));
+        texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        TextureRegion textureRegion = new TextureRegion(texture);
+        polySprite = new RepeatablePolygonSprite();
+        polySprite.setPolygon(textureRegion, chain, 20f);
     }
 
     @Override
