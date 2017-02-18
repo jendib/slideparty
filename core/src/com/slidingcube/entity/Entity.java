@@ -4,6 +4,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -18,20 +19,20 @@ public abstract class Entity implements InputProcessor {
     protected Body body; // box 2D body
 
     /**
-     * Called when it's time to render the entity using the sprite batch.
-     *
-     * @param batch Sprite batch
-     * @param delta Time passed
-     */
-    public void render(Batch batch, float delta) {}
-
-    /**
      * Called when it's time to render the entity using the polygon batch.
      *
      * @param batch Polygon batch
      * @param delta Time passed
      */
     public void renderPolygon(PolygonSpriteBatch batch, float delta) {}
+
+    /**
+     * Called when it's time to render the entity using the sprite batch.
+     *
+     * @param batch Sprite batch
+     * @param delta Time passed
+     */
+    public void render(SpriteBatch batch, float delta) {}
 
     /**
      * Returns the underlying box 2D body.

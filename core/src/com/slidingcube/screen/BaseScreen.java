@@ -135,25 +135,29 @@ public class BaseScreen implements Screen, InputProcessor {
     @Override
     public void render(float delta) {
         // clear the screen and step the world
-        Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1f);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         world.step(1 / 60f, 8, 8);
-
-        // draw world entities using the classic batch
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
-        for (Entity entity : entityList) {
-            entity.render(batch, delta);
-        }
-        batch.end();
 
         // draw world entities using the polygon batch
         polyBatch.setProjectionMatrix(camera.combined);
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        polyBatch.enableBlending();
         polyBatch.begin();
         for (Entity entity : entityList) {
             entity.renderPolygon(polyBatch, delta);
         }
         polyBatch.end();
+
+        // draw world entities using the classic batch
+        batch.setProjectionMatrix(camera.combined);
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        batch.begin();
+        for (Entity entity : entityList) {
+            entity.render(batch, delta);
+        }
+        batch.end();
 
         if (ConfigConstants.DEBUG) {
             // box 2d debug rendering
@@ -195,7 +199,9 @@ public class BaseScreen implements Screen, InputProcessor {
     public void dispose() {
         rayHandler.dispose();
         batch.dispose();
-        debugRenderer.dispose();
+        if (ConfigConstants.DEBUG) {
+            debugRenderer.dispose();
+        }
         world.dispose();
         Gdx.input.setInputProcessor(null);
     }

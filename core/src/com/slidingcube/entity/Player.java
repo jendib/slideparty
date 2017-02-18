@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -166,7 +167,7 @@ public class Player extends Entity {
     }
 
     @Override
-    public void render(Batch batch, float delta) {
+    public void render(SpriteBatch batch, float delta) {
         // help the last
         helpForceVector.x = helpForce * ConfigConstants.HELP_FORCE_MULTIPLIER;
         body.applyForceToCenter(helpForceVector, true);
