@@ -46,19 +46,19 @@ public class Ground extends Entity {
         bodyDef.type = BodyDef.BodyType.StaticBody;
 
         // generate ground line
-        float height = 1200;
+        float height = 1450;
         ChainShape chainShape = new ChainShape();
         Perlin perlin = new Perlin();
         perlin.setSeed(new Random().nextInt());
         Line line = new Line(perlin);
         float[] chain = new float[width * 2 + 4];
         chain[0] = 0;
-        chain[1] = - height;
+        chain[1] = 1000;
         chain[width * 2 + 2] = width;
-        chain[width * 2 + 3] = - height;
+        chain[width * 2 + 3] = 1000;
         for (int x = 0; x < width; x++) {
             chain[x * 2 + 2] = x;
-            chain[x * 2 + 3] = (float) line.getValue(x / (double) width) * 1000 - x / 2f - 1000;
+            chain[x * 2 + 3] = (float) line.getValue(x / (double) width) * 1000 - x / 2f + height;
         }
         chainShape.createChain(chain);
 
@@ -119,11 +119,11 @@ public class Ground extends Entity {
         // texture filling
         texture = new Texture(Gdx.files.internal("grass.png"));
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
-        Texture texture = new Texture(Gdx.files.internal("snow.jpg"));
-        texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        Texture texture = new Texture(Gdx.files.internal("ground.png"));
+        texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.MirroredRepeat);
         TextureRegion textureRegion = new TextureRegion(texture);
         polySprite = new RepeatablePolygonSprite();
-        polySprite.setPolygon(textureRegion, chain, 20f);
+        polySprite.setPolygon(textureRegion, chain, 40f); // ground texture density
     }
 
     @Override

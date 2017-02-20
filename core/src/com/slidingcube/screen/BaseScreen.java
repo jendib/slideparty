@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.slidingcube.constant.ConfigConstants;
 import com.slidingcube.entity.Entity;
 import com.slidingcube.renderer.Box2DDebugRenderer;
+import com.slidingcube.renderer.ParallaxBackground;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class BaseScreen implements Screen, InputProcessor {
     private RayHandler rayHandler; // light rendering
     private List<Entity> entityList = new ArrayList<>(); // physic entities tracked in the scene
     private List<Actor> actorList = new ArrayList<>(); // actors tracked in the scene
+    protected ParallaxBackground parallaxBackground; // Parallax background (optional)
     protected Runnable next; // Action to do when the scene ends. Subclasses are responsible for the call
 
     /**
@@ -140,11 +142,18 @@ public class BaseScreen implements Screen, InputProcessor {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         world.step(1 / 60f, 8, 8);
 
-        // draw world entities using the polygon batch
+        // draw background and world entities using the polygon batch
         polyBatch.setProjectionMatrix(camera.combined);
         Gdx.gl.glEnable(GL20.GL_BLEND);
         polyBatch.enableBlending();
         polyBatch.begin();
+
+        // draw the background first
+        if (parallaxBackground != null) {
+            parallaxBackground.draw(camera, polyBatch);
+        }
+
+        // draw entities
         for (Entity entity : entityList) {
             entity.renderPolygon(polyBatch, delta);
         }

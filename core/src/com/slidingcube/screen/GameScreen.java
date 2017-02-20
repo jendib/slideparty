@@ -2,6 +2,7 @@ package com.slidingcube.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -10,6 +11,8 @@ import com.slidingcube.camera.CameraHandler;
 import com.slidingcube.constant.ConfigConstants;
 import com.slidingcube.entity.Ground;
 import com.slidingcube.entity.Player;
+import com.slidingcube.renderer.ParallaxBackground;
+import com.slidingcube.renderer.ParallaxLayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +80,24 @@ public class GameScreen extends BaseScreen {
             debugLabel.setAlignment(Align.left);
             addActor(debugLabel);
         }
+
+        createLayers();
+    }
+
+    private void createLayers() {
+        Texture skyTexture = new Texture(Gdx.files.internal("sky.png"));
+        skyTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
+        ParallaxLayer skyLayer = new ParallaxLayer(skyTexture, 0f, true);
+
+        Texture mountainTexture = new Texture(Gdx.files.internal("mountain-2.png"));
+        mountainTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
+        ParallaxLayer mountainLayer = new ParallaxLayer(mountainTexture, 0.0005f, false);
+
+        Texture mountain2Texture = new Texture(Gdx.files.internal("mountain-1.png"));
+        mountain2Texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
+        ParallaxLayer mountain2Layer = new ParallaxLayer(mountain2Texture, 0.001f, false);
+
+        parallaxBackground = new ParallaxBackground(skyLayer, mountainLayer, mountain2Layer);
     }
 
     @Override

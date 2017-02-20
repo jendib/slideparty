@@ -54,7 +54,7 @@ public class Player extends Entity {
         // player body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(20f + 6 * index, 8);
+        bodyDef.position.set(40f + 6 * index, 2460);
         bodyDef.angularVelocity = 0;
         body = world.createBody(bodyDef);
 
