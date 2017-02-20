@@ -16,7 +16,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.slidingcube.constant.ConfigConstants;
 import com.slidingcube.entity.Entity;
-import com.slidingcube.renderer.Box2DDebugRenderer;
+import com.slidingcube.renderer.Box2dDebugRenderer;
 import com.slidingcube.renderer.ParallaxBackground;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ import box2dLight.RayHandler;
  * @author bgamard
  */
 public class BaseScreen implements Screen, InputProcessor {
-    private Box2DDebugRenderer debugRenderer; // box 2d debug renderer
+    private Box2dDebugRenderer debugRenderer; // box 2d debug renderer
     protected World world; // box 2d world
     private SpriteBatch batch; // batch projected on the camera matrix
     private PolygonSpriteBatch polyBatch; // batch for polygons
@@ -84,7 +84,7 @@ public class BaseScreen implements Screen, InputProcessor {
         polyBatch = new PolygonSpriteBatch();
         camera = new OrthographicCamera();
         if (ConfigConstants.DEBUG) {
-            debugRenderer = new Box2DDebugRenderer(true, true, false, true, false, false);
+            debugRenderer = new Box2dDebugRenderer(true, true, false, true, false, false);
         }
         world = new World(new Vector2(0, ConfigConstants.GRAVITY), true);
 

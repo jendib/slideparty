@@ -30,7 +30,7 @@ import java.util.Iterator;
  *
  * @author bgamard
  */
-public class Box2DDebugRenderer implements Disposable {
+public class Box2dDebugRenderer implements Disposable {
 
     /** the immediate mode renderer to output our debug drawings **/
     protected ShapeRenderer renderer;
@@ -51,12 +51,12 @@ public class Box2DDebugRenderer implements Disposable {
     private boolean drawVelocities;
     private boolean drawContacts;
 
-    public Box2DDebugRenderer () {
+    public Box2dDebugRenderer() {
         this(true, true, false, true, false, true);
     }
 
-    public Box2DDebugRenderer (boolean drawBodies, boolean drawJoints, boolean drawAABBs, boolean drawInactiveBodies,
-                               boolean drawVelocities, boolean drawContacts) {
+    public Box2dDebugRenderer(boolean drawBodies, boolean drawJoints, boolean drawAABBs, boolean drawInactiveBodies,
+                              boolean drawVelocities, boolean drawContacts) {
         // next we setup the immediate mode renderer
         renderer = new ShapeRenderer();
 
@@ -360,7 +360,7 @@ public class Box2DDebugRenderer implements Disposable {
     }
 
     public static void setAxis (Vector2 axis) {
-        Box2DDebugRenderer.axis = axis;
+        Box2dDebugRenderer.axis = axis;
     }
 
     public void dispose () {
