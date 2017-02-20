@@ -97,7 +97,11 @@ public class GameScreen extends BaseScreen {
         mountain2Texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         ParallaxLayer mountain2Layer = new ParallaxLayer(mountain2Texture, 0.001f, false);
 
-        parallaxBackground = new ParallaxBackground(skyLayer, mountainLayer, mountain2Layer);
+        Texture cloudsTexture = new Texture(Gdx.files.internal("clouds.png"));
+        cloudsTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
+        ParallaxLayer cloudsLayer = new ParallaxLayer(cloudsTexture, 0.0003f, true);
+
+        parallaxBackground = new ParallaxBackground(skyLayer, mountainLayer, mountain2Layer, cloudsLayer);
     }
 
     @Override
