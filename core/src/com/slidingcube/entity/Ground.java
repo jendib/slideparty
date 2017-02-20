@@ -117,7 +117,7 @@ public class Ground extends Entity {
         surfaceMesh.setIndices(indices);
 
         // texture filling
-        texture = new Texture(Gdx.files.internal("grass.png"));
+        texture = new Texture(Gdx.files.internal("surface.png"));
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         Texture texture = new Texture(Gdx.files.internal("ground.png"));
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.MirroredRepeat);
