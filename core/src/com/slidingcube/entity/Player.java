@@ -53,7 +53,8 @@ public class Player extends PhysicEntity {
         // player body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(40f + 6 * index, 2460);
+        // TODO Get the real ground initial position
+        bodyDef.position.set(5f + 6 * index, 1000);
         bodyDef.angularVelocity = 0;
         body = world.createBody(bodyDef);
 

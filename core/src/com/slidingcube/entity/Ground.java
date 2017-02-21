@@ -38,29 +38,41 @@ public class Ground extends PhysicEntity {
      * @param width Width of the ground
      */
     public Ground(World world, int width) {
-        BodyDef bodyDef = new BodyDef();
-        FixtureDef fixtureDef = new FixtureDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-
         // generate ground line
-        // TODO Flat beginning and end
-        float height = 1450;
         ChainShape chainShape = new ChainShape();
         Perlin perlin = new Perlin();
         perlin.setSeed(new Random().nextInt());
         Line line = new Line(perlin);
         float[] chain = new float[width * 2 + 4];
         chain[0] = 0;
-        chain[1] = 1000;
+        chain[1] = 0;
         chain[width * 2 + 2] = width;
-        chain[width * 2 + 3] = 1000;
+        chain[width * 2 + 3] = 0;
         for (int x = 0; x < width; x++) {
             chain[x * 2 + 2] = x;
-            chain[x * 2 + 3] = (float) line.getValue(x / (double) width) * 1000 - x / 2f + height;
+            if (x <= ConfigConstants.GROUND_FLAT_WIDTH) {
+                // the beginning is flat
+                chain[x * 2 + 3] = (float) line.getValue(0) * ConfigConstants.GROUND_SLOPE_FACTOR;
+            } else if (width - x <= ConfigConstants.GROUND_FLAT_WIDTH) {
+                // the end is flat
+                int lastPosition = width - ConfigConstants.GROUND_FLAT_WIDTH * 2;
+                chain[x * 2 + 3] = (float) line.getValue(lastPosition / (double) width)
+                        * ConfigConstants.GROUND_SLOPE_FACTOR
+                        - lastPosition * ConfigConstants.GROUND_SLOPE_MULTIPLIER;
+            } else {
+                float position = x - ConfigConstants.GROUND_FLAT_WIDTH; // position on the curvy part
+                float slope = position * ConfigConstants.GROUND_SLOPE_MULTIPLIER; // force a slope ground
+                chain[x * 2 + 3] = (float) line.getValue(position / (double) width)
+                        * ConfigConstants.GROUND_SLOPE_FACTOR
+                        - slope;
+            }
         }
         chainShape.createChain(chain);
 
         // ground body
+        BodyDef bodyDef = new BodyDef();
+        FixtureDef fixtureDef = new FixtureDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
         fixtureDef.shape = chainShape;
         fixtureDef.restitution = 0;
         fixtureDef.friction = ConfigConstants.GROUND_FRICTION;

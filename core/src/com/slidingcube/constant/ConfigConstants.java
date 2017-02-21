@@ -19,6 +19,9 @@ public class ConfigConstants {
 
     public static float GROUND_FRICTION = 0.1f; // ground friction
     public static int GROUND_WIDTH = 1000; // ground width
+    public static float GROUND_SLOPE_FACTOR = 1000f; // slope factor
+    public static float GROUND_SLOPE_MULTIPLIER = 0.5f; // slope multiplier
+    public static int GROUND_FLAT_WIDTH = 50; // ground is flat at beginning and end
 
     public static float HELP_FORCE_MULTIPLIER = 100f; // help force factor
     public static float JUMP_VERTICAL = 4000f; // vertical jump force in N
