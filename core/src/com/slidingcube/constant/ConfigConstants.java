@@ -11,9 +11,9 @@ public class ConfigConstants {
     }
 
     public static final boolean DEBUG = true; // debug mode
+    public static final int COUNTDOWN = 6000; // countdown timer in milliseconds
 
     public static float GRAVITY = -20f; // world gravity in m/s²
-    public static float PPM = 25; // camera viewport initial zoom
     public static float HORIZONTAL_CAMERA_MARGIN = 0.02f; // horizontal margin factor between screen and players
     public static float VERTICAL_CAMERA_MARGIN = 0f; // vertical margin factor between screen and players
 

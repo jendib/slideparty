@@ -13,7 +13,6 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.slidingcube.background.Background;
 import com.slidingcube.constant.ConfigConstants;
 import com.slidingcube.entity.PhysicEntity;
@@ -32,10 +31,8 @@ public class PhysicScreen extends BaseScreen implements InputProcessor {
     protected World world; // box 2d world
     private SpriteBatch batch; // batch projected on the camera matrix
     private PolygonSpriteBatch polyBatch; // batch for polygons
-    private SpriteBatch uiBatch; // batch not projected
     protected OrthographicCamera camera; // 2d camera
     private List<PhysicEntity> entityList = new ArrayList<>(); // physic entities tracked in the scene
-    private List<Actor> actorList = new ArrayList<>(); // actors tracked in the scene
     private Background background; // Screen background (optional)
 
     /**
@@ -70,27 +67,6 @@ public class PhysicScreen extends BaseScreen implements InputProcessor {
     }
 
     /**
-     * Add a new actor to the scene.
-     *
-     * @param actor Actor
-     * @return The actor
-     */
-    protected Actor addActor(Actor actor) {
-        // TODO Stop using the Actor class
-        actorList.add(actor);
-        return actor;
-    }
-
-    /**
-     * Remove an actor from the scene.
-     *
-     * @param actor Actor
-     */
-    protected void removeActor(Actor actor) {
-        actorList.remove(actor);
-    }
-
-    /**
      * Set the background.
      *
      * @param background Screen background
@@ -102,9 +78,7 @@ public class PhysicScreen extends BaseScreen implements InputProcessor {
     @Override
     public void show() {
         entityList.clear();
-        actorList.clear();
         batch = new SpriteBatch();
-        uiBatch = new SpriteBatch();
         polyBatch = new PolygonSpriteBatch();
         camera = new OrthographicCamera();
         if (ConfigConstants.DEBUG) {
@@ -187,19 +161,10 @@ public class PhysicScreen extends BaseScreen implements InputProcessor {
             // box 2d debug rendering
             debugRenderer.render(world, camera.combined);
         }
-
-        // draw the UI using the UI batch
-        uiBatch.begin();
-        for (Actor actor : actorList) {
-            actor.draw(uiBatch, 1f);
-        }
-        uiBatch.end();
     }
 
     @Override
     public void resize(int width, int height) {
-        camera.setToOrtho(false, width / ConfigConstants.PPM, height / ConfigConstants.PPM);
-        camera.update();
     }
 
     @Override

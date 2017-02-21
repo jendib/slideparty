@@ -2,13 +2,9 @@ package com.slidingcube.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.slidingcube.background.ParallaxBackground;
 import com.slidingcube.background.ParallaxLayer;
 import com.slidingcube.camera.CameraHandler;
@@ -16,6 +12,7 @@ import com.slidingcube.constant.ConfigConstants;
 import com.slidingcube.entity.Ground;
 import com.slidingcube.entity.Player;
 import com.slidingcube.entity.StartGate;
+import com.slidingcube.ui.UIStage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +29,8 @@ public class GameScreen extends PhysicScreen {
     private List<Player> playerList; // list of active players
     private StartGate startGate; // start gate blocking players at the beginning
     private int playerCount; // number of players
-    private Label debugLabel; // debug label
-    private Label startLabel; // countdown label
+    private UIStage stage; // stage for the UI
     private CameraHandler cameraHandler; // camera handling
-    private long startTime; // start time of the game
     private NavigableMap<Float, Player> sortedPlayerIndex = new TreeMap<>(); // map of sorted players
 
     /**
@@ -81,27 +76,8 @@ public class GameScreen extends PhysicScreen {
         // camera handling
         cameraHandler = new CameraHandler(camera, playerList);
 
-        // countdown label
-        Label.LabelStyle startStyle = new Label.LabelStyle();
-        startStyle.font = new BitmapFont(Gdx.files.internal("font/countdown.fnt"));
-        startStyle.fontColor = Color.valueOf("ff002aff");
-        startLabel = new Label(null, startStyle);
-        startLabel.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        startLabel.setAlignment(Align.center);
-        addActor(startLabel);
-
-        if (ConfigConstants.DEBUG) {
-            // debug label
-            Label.LabelStyle label1Style = new Label.LabelStyle();
-            label1Style.font = new BitmapFont(Gdx.files.internal("font/debug.fnt"));
-            label1Style.fontColor = Color.WHITE;
-            int rowHeight = Gdx.graphics.getWidth() / 8;
-            debugLabel = new Label(null, label1Style);
-            debugLabel.setSize(Gdx.graphics.getWidth(), rowHeight);
-            debugLabel.setPosition(10, Gdx.graphics.getHeight() - rowHeight);
-            debugLabel.setAlignment(Align.left);
-            addActor(debugLabel);
-        }
+        // UI
+        stage = new UIStage(new ScreenViewport(camera));
     }
 
     /**
@@ -159,32 +135,19 @@ public class GameScreen extends PhysicScreen {
         }
 
         // the first drawn frame is the game start
-        if (startTime == 0) {
-            startTime = TimeUtils.millis();
-        }
+        stage.startCountdown();
 
         // 5 seconds after the start, remove the start gate
-        if (TimeUtils.millis() - startTime > 5000 && startGate != null) {
+        if (stage.isCountdownEnded() && startGate != null) {
             removeEntity(startGate);
-            removeActor(startLabel);
             startGate = null;
-            startLabel = null;
-        }
-
-        // countdown label
-        if (startLabel != null) {
-            long countdown = (5000 - TimeUtils.millis() + startTime) / 1000;
-            startLabel.setText(countdown == 0 ? "GO !" : String.valueOf(countdown));
         }
 
         // update the camera
         cameraHandler.update();
 
-        if (ConfigConstants.DEBUG) {
-            // debug info
-            debugLabel.setText("Elapsed : " + (TimeUtils.millis() - startTime) / 1000 + "\n"
-                    + "Speed : " + firstPlayer.getBody().getLinearVelocity().len() + "\n"
-                    + "FPS : " + Gdx.graphics.getFramesPerSecond());
-        }
+        // render the UI
+        stage.act(delta);
+        stage.draw();
     }
 }
