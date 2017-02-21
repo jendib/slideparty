@@ -27,9 +27,10 @@ import java.util.Random;
  * @author bgamard
  */
 public class Ground extends PhysicEntity {
-    private RepeatablePolygonSprite polySprite; // Sprite to draw the ground
-    private Mesh surfaceMesh;
-    private Texture texture;
+    private RepeatablePolygonSprite polySprite; // sprite to draw the ground
+    private Mesh surfaceMesh; // mesh of the surface
+    private Texture texture; // surface texture
+    private float[] line; // ground line coordinates
 
     /**
      * Create a new ground.
@@ -43,31 +44,31 @@ public class Ground extends PhysicEntity {
         Perlin perlin = new Perlin();
         perlin.setSeed(new Random().nextInt());
         Line line = new Line(perlin);
-        float[] chain = new float[width * 2 + 4];
-        chain[0] = 0;
-        chain[1] = 0;
-        chain[width * 2 + 2] = width;
-        chain[width * 2 + 3] = 0;
+        this.line = new float[width * 2 + 4];
+        this.line[0] = 0;
+        this.line[1] = 0;
+        this.line[width * 2 + 2] = width;
+        this.line[width * 2 + 3] = 0;
         for (int x = 0; x < width; x++) {
-            chain[x * 2 + 2] = x;
+            this.line[x * 2 + 2] = x;
             if (x <= ConfigConstants.GROUND_FLAT_WIDTH) {
                 // the beginning is flat
-                chain[x * 2 + 3] = (float) line.getValue(0) * ConfigConstants.GROUND_SLOPE_FACTOR;
+                this.line[x * 2 + 3] = (float) line.getValue(0) * ConfigConstants.GROUND_SLOPE_FACTOR;
             } else if (width - x <= ConfigConstants.GROUND_FLAT_WIDTH) {
                 // the end is flat
                 int lastPosition = width - ConfigConstants.GROUND_FLAT_WIDTH * 2;
-                chain[x * 2 + 3] = (float) line.getValue(lastPosition / (double) width)
+                this.line[x * 2 + 3] = (float) line.getValue(lastPosition / (double) width)
                         * ConfigConstants.GROUND_SLOPE_FACTOR
                         - lastPosition * ConfigConstants.GROUND_SLOPE_MULTIPLIER;
             } else {
                 float position = x - ConfigConstants.GROUND_FLAT_WIDTH; // position on the curvy part
                 float slope = position * ConfigConstants.GROUND_SLOPE_MULTIPLIER; // force a slope ground
-                chain[x * 2 + 3] = (float) line.getValue(position / (double) width)
+                this.line[x * 2 + 3] = (float) line.getValue(position / (double) width)
                         * ConfigConstants.GROUND_SLOPE_FACTOR
                         - slope;
             }
         }
-        chainShape.createChain(chain);
+        chainShape.createChain(this.line);
 
         // ground body
         BodyDef bodyDef = new BodyDef();
@@ -82,14 +83,14 @@ public class Ground extends PhysicEntity {
 
         // initialize surface mesh vertices
         float color = Color.WHITE.toFloatBits();
-        int chainLinkCount = (chain.length - 4) / 2; // remove first and last chain vertices
-        int verticesCount = chainLinkCount * 2; // 2 vertices by chain link
+        int chainLinkCount = (this.line.length - 4) / 2; // remove first and last line vertices
+        int verticesCount = chainLinkCount * 2; // 2 vertices by line link
         float[] vertices = new float[verticesCount * 5]; // 5 data per vertice
-        float maxChainX = chain[chain.length - 4]; // last used chain X value
+        float maxChainX = this.line[this.line.length - 4]; // last used line X value
 
         for (int i = 0; i < chainLinkCount; i++) { // assign surface vertices data 10 by 10
-            float chainX = chain[2 + i * 2]; // skip first 2 coordinates (X1, Y1)
-            float chainY = chain[3 + i * 2]; // skip first 3 coordinates (X1, Y1, X2)
+            float chainX = this.line[2 + i * 2]; // skip first 2 coordinates (X1, Y1)
+            float chainY = this.line[3 + i * 2]; // skip first 3 coordinates (X1, Y1, X2)
 
             // first vertice (top one)
             vertices[i * 10] = chainX; // vertice X
@@ -133,7 +134,7 @@ public class Ground extends PhysicEntity {
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.MirroredRepeat);
         TextureRegion textureRegion = new TextureRegion(texture);
         polySprite = new RepeatablePolygonSprite();
-        polySprite.setPolygon(textureRegion, chain, 40f); // ground texture density
+        polySprite.setPolygon(textureRegion, this.line, 40f); // ground texture density
     }
 
     @Override
@@ -145,5 +146,20 @@ public class Ground extends PhysicEntity {
     public void render(SpriteBatch batch, float delta) {
         texture.bind(0);
         surfaceMesh.render(batch.getShader(), GL20.GL_TRIANGLES);
+    }
+
+    /**
+     * Return the height at an X position.
+     *
+     * @param x Position
+     * @return Height of the ground
+     */
+    public float getHeightAt(float x) {
+        int position = Math.round(x) * 2 + 1;
+        if (position > line.length + 1) {
+            // invalid position
+            return -1;
+        }
+        return line[position];
     }
 }

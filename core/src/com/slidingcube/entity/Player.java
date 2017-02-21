@@ -29,13 +29,13 @@ import net.dermetfan.gdx.graphics.g2d.Box2DSprite;
  * @author bgamard
  */
 public class Player extends PhysicEntity {
-    public int footContactCount; // Number of contact with the ground
+    private int footContactCount; // Number of contact with the ground
     private long lastJumpTime; // Last jump time
     private float helpForce = 0; // Help force
     private int index; // Index of this player
     private ParticleEffect effect; // Ground particles effect
     private Vector2 groundContactPosition; // Contact between the player and the ground
-    private Box2DSprite box2DSprite; // Player sprite
+    private Box2DSprite sprite; // Player sprite
     private Label label; // Index label
 
     private transient Vector2 helpForceVector = new Vector2(); // Help force vector
@@ -60,7 +60,7 @@ public class Player extends PhysicEntity {
 
         // top shape
         PolygonShape boxShape = new PolygonShape();
-        boxShape.setAsBox(2.5f, 0.3f, new Vector2(0,3), 0);
+        boxShape.setAsBox(2.5f, 0.3f, new Vector2(0, 3), 0);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = boxShape;
         fixtureDef.density = ConfigConstants.PLAYER_DENSITY;
@@ -103,7 +103,7 @@ public class Player extends PhysicEntity {
         effect.allowCompletion();
 
         // player sprite
-        box2DSprite = new Box2DSprite(new Texture(Gdx.files.internal("box.png")));
+        sprite = new Box2DSprite(new Texture(Gdx.files.internal("box.png")));
 
         // label
         Label.LabelStyle label1Style = new Label.LabelStyle();
@@ -178,7 +178,7 @@ public class Player extends PhysicEntity {
         body.applyForceToCenter(velocity.nor().scl(- 2f * sqrtVelocity), true);
 
         // render the sprite
-        // box2DSprite.draw(batch, body);
+        // sprite.draw(batch, body);
 
         // render the label
         Vector2 position = body.getWorldPoint(labelPositionVector);

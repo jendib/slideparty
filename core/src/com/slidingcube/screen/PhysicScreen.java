@@ -60,6 +60,16 @@ public class PhysicScreen extends BaseScreen implements InputProcessor {
     }
 
     /**
+     * Remove a physic entity from the scene.
+     *
+     * @param entity Physic entity to remove
+     */
+    protected void removeEntity(PhysicEntity entity) {
+        world.destroyBody(entity.getBody());
+        entityList.remove(entity);
+    }
+
+    /**
      * Add a new actor to the scene.
      *
      * @param actor Actor
@@ -69,6 +79,15 @@ public class PhysicScreen extends BaseScreen implements InputProcessor {
         // TODO Stop using the Actor class
         actorList.add(actor);
         return actor;
+    }
+
+    /**
+     * Remove an actor from the scene.
+     *
+     * @param actor Actor
+     */
+    protected void removeActor(Actor actor) {
+        actorList.remove(actor);
     }
 
     /**

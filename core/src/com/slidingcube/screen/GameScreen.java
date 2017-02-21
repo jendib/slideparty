@@ -8,12 +8,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.slidingcube.background.ParallaxBackground;
 import com.slidingcube.background.ParallaxLayer;
 import com.slidingcube.camera.CameraHandler;
 import com.slidingcube.constant.ConfigConstants;
 import com.slidingcube.entity.Ground;
 import com.slidingcube.entity.Player;
+import com.slidingcube.entity.StartGate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +29,14 @@ import java.util.TreeMap;
  * @author bgamard
  */
 public class GameScreen extends PhysicScreen {
-    private List<Player> playerList; // List of active players
-    private int playerCount; // Number of players
-    private Label debugLabel; // Debug label
-    private CameraHandler cameraHandler; // Camera handling
-
-    private transient NavigableMap<Float, Player> sortedPlayerIndex = new TreeMap<>(); // Map of sorted players
+    private List<Player> playerList; // list of active players
+    private StartGate startGate; // start gate blocking players at the beginning
+    private int playerCount; // number of players
+    private Label debugLabel; // debug label
+    private Label startLabel; // countdown label
+    private CameraHandler cameraHandler; // camera handling
+    private long startTime; // start time of the game
+    private NavigableMap<Float, Player> sortedPlayerIndex = new TreeMap<>(); // map of sorted players
 
     /**
      * Create a new game screen.
@@ -70,17 +74,27 @@ public class GameScreen extends PhysicScreen {
             addEntity(player);
         }
 
+        // add the start gate
+        startGate = new StartGate(world, ground);
+        addEntity(startGate);
+
         // camera handling
         cameraHandler = new CameraHandler(camera, playerList);
+
+        // countdown label
+        Label.LabelStyle startStyle = new Label.LabelStyle();
+        startStyle.font = new BitmapFont(Gdx.files.internal("font/countdown.fnt"));
+        startStyle.fontColor = Color.valueOf("ff002aff");
+        startLabel = new Label(null, startStyle);
+        startLabel.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        startLabel.setAlignment(Align.center);
+        addActor(startLabel);
 
         if (ConfigConstants.DEBUG) {
             // debug label
             Label.LabelStyle label1Style = new Label.LabelStyle();
-            label1Style.font = new BitmapFont(Gdx.files.internal("font/debug.fnt"),
-                    Gdx.files.internal("font/debug.png"),
-                    false, true);
+            label1Style.font = new BitmapFont(Gdx.files.internal("font/debug.fnt"));
             label1Style.fontColor = Color.WHITE;
-
             int rowHeight = Gdx.graphics.getWidth() / 8;
             debugLabel = new Label(null, label1Style);
             debugLabel.setSize(Gdx.graphics.getWidth(), rowHeight);
@@ -100,15 +114,15 @@ public class GameScreen extends PhysicScreen {
 
         Texture mountainTexture = new Texture(Gdx.files.internal("mountain-2.png"));
         mountainTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
-        ParallaxLayer mountainLayer = new ParallaxLayer(mountainTexture, 0.0005f, false);
+        ParallaxLayer mountainLayer = new ParallaxLayer(mountainTexture, 0.001f, false);
 
         Texture mountain2Texture = new Texture(Gdx.files.internal("mountain-1.png"));
         mountain2Texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
-        ParallaxLayer mountain2Layer = new ParallaxLayer(mountain2Texture, 0.001f, false);
+        ParallaxLayer mountain2Layer = new ParallaxLayer(mountain2Texture, 0.002f, false);
 
         Texture cloudsTexture = new Texture(Gdx.files.internal("clouds.png"));
         cloudsTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
-        ParallaxLayer cloudsLayer = new ParallaxLayer(cloudsTexture, 0.0003f, true);
+        ParallaxLayer cloudsLayer = new ParallaxLayer(cloudsTexture, 0.0006f, true);
 
         setBackground(new ParallaxBackground(skyLayer, mountainLayer, mountain2Layer, cloudsLayer));
     }
@@ -144,12 +158,31 @@ public class GameScreen extends PhysicScreen {
             player.setHelpForce((firstPlayer.getPosition().x - entry.getKey()) * ConfigConstants.HELP_FORCE);
         }
 
+        // the first drawn frame is the game start
+        if (startTime == 0) {
+            startTime = TimeUtils.millis();
+        }
+
+        // 5 seconds after the start, remove the start gate
+        if (TimeUtils.millis() - startTime > 5000 && startGate != null) {
+            removeEntity(startGate);
+            removeActor(startLabel);
+            startGate = null;
+            startLabel = null;
+        }
+
+        // countdown label
+        if (startLabel != null) {
+            long countdown = (5000 - TimeUtils.millis() + startTime) / 1000;
+            startLabel.setText(countdown == 0 ? "GO !" : String.valueOf(countdown));
+        }
+
         // update the camera
         cameraHandler.update();
 
         if (ConfigConstants.DEBUG) {
             // debug info
-            debugLabel.setText("First player : " + (firstPlayer.getIndex() + 1) + " at " + firstPlayer.getPosition().x + "/" + firstPlayer.getPosition().y + "\n"
+            debugLabel.setText("Elapsed : " + (TimeUtils.millis() - startTime) / 1000 + "\n"
                     + "Speed : " + firstPlayer.getBody().getLinearVelocity().len() + "\n"
                     + "FPS : " + Gdx.graphics.getFramesPerSecond());
         }
