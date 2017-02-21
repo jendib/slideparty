@@ -11,13 +11,10 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.RepeatablePolygonSprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.EarClippingTriangulator;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.ShortArray;
 import com.flowpowered.noise.model.Line;
 import com.flowpowered.noise.module.source.Perlin;
 import com.slidingcube.constant.ConfigConstants;
@@ -46,6 +43,7 @@ public class Ground extends Entity {
         bodyDef.type = BodyDef.BodyType.StaticBody;
 
         // generate ground line
+        // TODO Flat beginning and end
         float height = 1450;
         ChainShape chainShape = new ChainShape();
         Perlin perlin = new Perlin();

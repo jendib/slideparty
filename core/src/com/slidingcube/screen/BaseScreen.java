@@ -14,16 +14,13 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.slidingcube.background.Background;
 import com.slidingcube.constant.ConfigConstants;
 import com.slidingcube.entity.Entity;
 import com.slidingcube.renderer.Box2dDebugRenderer;
-import com.slidingcube.renderer.ParallaxBackground;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import box2dLight.DirectionalLight;
-import box2dLight.RayHandler;
 
 /**
  * Base game screen.
@@ -37,10 +34,9 @@ public class BaseScreen implements Screen, InputProcessor {
     private PolygonSpriteBatch polyBatch; // batch for polygons
     private SpriteBatch uiBatch; // batch not projected
     protected OrthographicCamera camera; // 2d camera
-    private RayHandler rayHandler; // light rendering
     private List<Entity> entityList = new ArrayList<>(); // physic entities tracked in the scene
     private List<Actor> actorList = new ArrayList<>(); // actors tracked in the scene
-    protected ParallaxBackground parallaxBackground; // Parallax background (optional)
+    private Background background; // Screen background (optional)
     protected Runnable next; // Action to do when the scene ends. Subclasses are responsible for the call
 
     /**
@@ -75,6 +71,15 @@ public class BaseScreen implements Screen, InputProcessor {
         return actor;
     }
 
+    /**
+     * Set the background.
+     *
+     * @param background Screen background
+     */
+    protected void setBackground(Background background) {
+        this.background = background;
+    }
+
     @Override
     public void show() {
         entityList.clear();
@@ -87,15 +92,6 @@ public class BaseScreen implements Screen, InputProcessor {
             debugRenderer = new Box2dDebugRenderer(true, true, false, true, false, false);
         }
         world = new World(new Vector2(0, ConfigConstants.GRAVITY), true);
-
-        // lighting
-        RayHandler.setGammaCorrection(true);
-        RayHandler.useDiffuseLight(true);
-        rayHandler = new RayHandler(world);
-        rayHandler.setAmbientLight(0.5f, 0.5f, 0.5f, 0.1f);
-        rayHandler.setBlurNum(1);
-        DirectionalLight light = new DirectionalLight(rayHandler, 128, null, 225f);
-        light.setColor(1f, 1f, 1f, 1f);
 
         // collision listener
         world.setContactListener(new ContactListener() {
@@ -149,8 +145,8 @@ public class BaseScreen implements Screen, InputProcessor {
         polyBatch.begin();
 
         // draw the background first
-        if (parallaxBackground != null) {
-            parallaxBackground.draw(camera, polyBatch);
+        if (background != null) {
+            background.draw(camera, polyBatch);
         }
 
         // draw entities
@@ -172,10 +168,6 @@ public class BaseScreen implements Screen, InputProcessor {
             // box 2d debug rendering
             debugRenderer.render(world, camera.combined);
         }
-
-        // render lights
-        //rayHandler.setCombinedMatrix(camera);
-        //rayHandler.updateAndRender();
 
         // draw the UI using the UI batch
         uiBatch.begin();
@@ -206,7 +198,6 @@ public class BaseScreen implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
-        rayHandler.dispose();
         batch.dispose();
         if (ConfigConstants.DEBUG) {
             debugRenderer.dispose();

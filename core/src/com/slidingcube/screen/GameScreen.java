@@ -7,12 +7,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
+import com.slidingcube.background.ParallaxBackground;
+import com.slidingcube.background.ParallaxLayer;
 import com.slidingcube.camera.CameraHandler;
 import com.slidingcube.constant.ConfigConstants;
 import com.slidingcube.entity.Ground;
 import com.slidingcube.entity.Player;
-import com.slidingcube.renderer.ParallaxBackground;
-import com.slidingcube.renderer.ParallaxLayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +51,13 @@ public class GameScreen extends BaseScreen {
         super.show();
         playerList.clear();
 
+        createBackground();
+
         // the ground
         Ground ground = new Ground(world, ConfigConstants.GROUND_WIDTH);
         addEntity(ground);
+
+        // TODO Stop the players from going off scene (tree on left, house on right)
 
         // add players
         for (int i = 0; i < playerCount; i++) {
@@ -80,11 +84,12 @@ public class GameScreen extends BaseScreen {
             debugLabel.setAlignment(Align.left);
             addActor(debugLabel);
         }
-
-        createLayers();
     }
 
-    private void createLayers() {
+    /**
+     * Create the parallax background.
+     */
+    private void createBackground() {
         Texture skyTexture = new Texture(Gdx.files.internal("sky.png"));
         skyTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         ParallaxLayer skyLayer = new ParallaxLayer(skyTexture, 0f, true);
@@ -101,7 +106,7 @@ public class GameScreen extends BaseScreen {
         cloudsTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
         ParallaxLayer cloudsLayer = new ParallaxLayer(cloudsTexture, 0.0003f, true);
 
-        parallaxBackground = new ParallaxBackground(skyLayer, mountainLayer, mountain2Layer, cloudsLayer);
+        setBackground(new ParallaxBackground(skyLayer, mountainLayer, mountain2Layer, cloudsLayer));
     }
 
     @Override
