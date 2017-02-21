@@ -14,26 +14,6 @@ class GdxGame extends Game {
 	public void create() {
 		batch = new SpriteBatch();
 
-        // create screens
-		final BaseScreen homeScreen = new HomeScreen();
-        final BaseScreen gameScreen = new GameScreen(4);
-
-        // play game after home screen
-		homeScreen.setNext(new Runnable() {
-			@Override
-			public void run() {
-				setScreen(gameScreen);
-			}
-		});
-
-        // return to home screen after playing
-        gameScreen.setNext(new Runnable() {
-            @Override
-            public void run() {
-                setScreen(homeScreen);
-            }
-        });
-
         // Start by NumberOfPlayerScreen
         this.setScreen(new NumberOfPlayerScreen(this));
 

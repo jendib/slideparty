@@ -95,7 +95,7 @@ public class NumberOfPlayerScreen implements Screen {
         play.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
-                game.setScreen(new GameScreen(numberOfPlayer));
+                game.setScreen(new GameScreen(game, numberOfPlayer));
 
                 return true;
             }

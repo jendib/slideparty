@@ -1,5 +1,6 @@
 package com.slidingcube.screen;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -30,6 +31,7 @@ public class GameScreen extends BaseScreen {
     private int playerCount; // Number of players
     private Label debugLabel; // Debug label
     private CameraHandler cameraHandler; // Camera handling
+    private Game game;
 
     private transient NavigableMap<Float, Player> sortedPlayerIndex = new TreeMap<>(); // Map of sorted players
 
@@ -38,12 +40,14 @@ public class GameScreen extends BaseScreen {
      *
      * @param playerCount Number of players to create
      */
-    public GameScreen(int playerCount) {
+    public GameScreen(Game aGame, int playerCount) {
         if (playerCount > 4) {
             playerCount = 4;
         }
         playerList = new ArrayList<>(playerCount);
         this.playerCount = playerCount;
+
+        game = aGame;
     }
 
     @Override
@@ -130,7 +134,7 @@ public class GameScreen extends BaseScreen {
 
         // all players are arrived
         if (firstPlayer == null) {
-            next.run();
+            game.setScreen(new NumberOfPlayerScreen(game));
             return;
         }
 
