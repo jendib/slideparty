@@ -26,7 +26,7 @@ import java.util.Random;
  *
  * @author bgamard
  */
-public class Ground extends Entity {
+public class Ground extends PhysicEntity {
     private RepeatablePolygonSprite polySprite; // Sprite to draw the ground
     private Mesh surfaceMesh;
     private Texture texture;

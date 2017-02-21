@@ -32,7 +32,8 @@ public class CameraHandler {
      * Update the camera position and viewport.
      */
     public void update() {
-        // camera positionned in the middle on all players
+        // camera positioned in the middle on all players
+        // TODO bound camera to scene (x > 0 && x < ground_width)
         float sumX = 0;
         float sumY = 0;
         for (Player player : playerList) {

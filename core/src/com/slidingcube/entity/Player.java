@@ -3,7 +3,6 @@ package com.slidingcube.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -29,7 +28,7 @@ import net.dermetfan.gdx.graphics.g2d.Box2DSprite;
  *
  * @author bgamard
  */
-public class Player extends Entity {
+public class Player extends PhysicEntity {
     public int footContactCount; // Number of contact with the ground
     private long lastJumpTime; // Last jump time
     private float helpForce = 0; // Help force
@@ -138,7 +137,7 @@ public class Player extends Entity {
     }
 
     @Override
-    public void onBeginContact(Entity entity, Fixture fixture, Contact contact) {
+    public void onBeginContact(PhysicEntity entity, Fixture fixture, Contact contact) {
         if (ConfigConstants.FIXTURE_FOOT_ID == fixture.getUserData()) {
             // something touched our foot
             footContactCount++;
@@ -154,7 +153,7 @@ public class Player extends Entity {
     }
 
     @Override
-    public void onEndContact(Entity entity, Fixture fixture, Contact contact) {
+    public void onEndContact(PhysicEntity entity, Fixture fixture, Contact contact) {
         if (ConfigConstants.FIXTURE_FOOT_ID == fixture.getUserData()) {
             // something stopped touching our foot
             footContactCount--;
@@ -194,6 +193,7 @@ public class Player extends Entity {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        // TODO GameScreen should handle touch events
         boolean applyForce = false;
         int width = Gdx.graphics.getWidth();
         int height = Gdx.graphics.getHeight();
@@ -216,7 +216,7 @@ public class Player extends Entity {
                     body.getWorldCenter(), true);
 
             // TODO push entities below us
-            /*for (Entity entity : walkingOnEntitySet) {
+            /*for (PhysicEntity entity : walkingOnEntitySet) {
                 entity.getBody().applyLinearImpulse(new Vector2(0, ConfigConstants.JUMP_PUSH),
                         entity.getBody().getWorldCenter(), true);
             }*/

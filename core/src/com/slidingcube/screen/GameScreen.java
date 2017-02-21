@@ -26,28 +26,28 @@ import java.util.TreeMap;
  *
  * @author bgamard
  */
-public class GameScreen extends BaseScreen {
+public class GameScreen extends PhysicScreen {
     private List<Player> playerList; // List of active players
     private int playerCount; // Number of players
     private Label debugLabel; // Debug label
     private CameraHandler cameraHandler; // Camera handling
-    private Game game;
 
     private transient NavigableMap<Float, Player> sortedPlayerIndex = new TreeMap<>(); // Map of sorted players
 
     /**
      * Create a new game screen.
      *
+     * @param game Calling game
      * @param playerCount Number of players to create
      */
-    public GameScreen(Game aGame, int playerCount) {
+    public GameScreen(Game game, int playerCount) {
+        super(game);
+
         if (playerCount > 4) {
             playerCount = 4;
         }
         playerList = new ArrayList<>(playerCount);
         this.playerCount = playerCount;
-
-        game = aGame;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class GameScreen extends BaseScreen {
         Ground ground = new Ground(world, ConfigConstants.GROUND_WIDTH);
         addEntity(ground);
 
-        // TODO Stop the players from going off scene (tree on left, house on right)
+        // TODO Stop the players from going off scene (rock on left, house on right)
 
         // add players
         for (int i = 0; i < playerCount; i++) {

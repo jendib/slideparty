@@ -1,8 +1,6 @@
 package com.slidingcube.entity;
 
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -15,7 +13,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
  *
  * @author bgamard
  */
-public abstract class Entity implements InputProcessor {
+public abstract class PhysicEntity implements InputProcessor {
     protected Body body; // box 2D body
 
     /**
@@ -46,7 +44,7 @@ public abstract class Entity implements InputProcessor {
     /**
      * Returns the entity position.
      *
-     * @return Entity position
+     * @return PhysicEntity position
      */
     public Vector2 getPosition() {
         return body.getPosition();
@@ -59,7 +57,7 @@ public abstract class Entity implements InputProcessor {
      * @param fixture Fixture from this entity which collided
      * @param contact Contact points informations
      */
-    public void onBeginContact(Entity entity, Fixture fixture, Contact contact) {}
+    public void onBeginContact(PhysicEntity entity, Fixture fixture, Contact contact) {}
 
     /**
      * Called when an entity stops touching this entity.
@@ -68,7 +66,7 @@ public abstract class Entity implements InputProcessor {
      * @param fixture Fixture from this entity which collided
      * @param contact Contact points informations
      */
-    public void onEndContact(Entity entity, Fixture fixture, Contact contact) {}
+    public void onEndContact(PhysicEntity entity, Fixture fixture, Contact contact) {}
 
     // InputProcessor
     @Override

@@ -2,7 +2,6 @@ package com.slidingcube.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -15,18 +14,21 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
- * Choose player screen.
+ * Choose players screen.
  *
  * @author dtroncy
  */
-
-public class NumberOfPlayerScreen implements Screen {
+public class NumberOfPlayerScreen extends BaseScreen {
     private Stage stage;
     private int numberOfPlayer = 4;
-    private Game game;
 
-    public NumberOfPlayerScreen(Game aGame) {
-        game = aGame;
+    /**
+     * Create a new game screen.
+     *
+     * @param game Calling game
+     */
+    public NumberOfPlayerScreen(Game game) {
+        super(game);
     }
 
     @Override
@@ -40,7 +42,7 @@ public class NumberOfPlayerScreen implements Screen {
                 false, true);
         label1Style.fontColor = Color.WHITE;
 
-        Label title = new Label("Number of player", label1Style);
+        Label title = new Label("Number of players", label1Style);
         title.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         title.setAlignment(Align.top);
         stage.addActor(title);
@@ -57,21 +59,21 @@ public class NumberOfPlayerScreen implements Screen {
                 Gdx.files.internal("font/debug.png"),
                 false, true);
 
-        TextButton more=new TextButton("More",styleButton);
-        more.setSize(200,200);
-        more.setPosition(Gdx.graphics.getWidth()*2/3, Gdx.graphics.getHeight()/2);
-        stage.addActor(more);
+        TextButton moreBtn = new TextButton("More",styleButton);
+        moreBtn.setSize(200,200);
+        moreBtn.setPosition(Gdx.graphics.getWidth()*2/3, Gdx.graphics.getHeight()/2);
+        stage.addActor(moreBtn);
 
-        TextButton less=new TextButton("Less",styleButton);
-        less.setSize(200,200);
-        less.setPosition(Gdx.graphics.getWidth()/3, Gdx.graphics.getHeight()/2);
-        stage.addActor(less);
+        TextButton lessBtn = new TextButton("Less",styleButton);
+        lessBtn.setSize(200,200);
+        lessBtn.setPosition(Gdx.graphics.getWidth()/3, Gdx.graphics.getHeight()/2);
+        stage.addActor(lessBtn);
 
-        TextButton play=new TextButton("Play",styleButton);
-        play.setPosition(Gdx.graphics.getWidth()/2, 0);
-        stage.addActor(play);
+        TextButton playBtn = new TextButton("Play",styleButton);
+        playBtn.setPosition(Gdx.graphics.getWidth()/2, 0);
+        stage.addActor(playBtn);
 
-        more.addListener(new InputListener() {
+        moreBtn.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
                 if(numberOfPlayer<4){
@@ -82,7 +84,7 @@ public class NumberOfPlayerScreen implements Screen {
             }
         });
 
-        less.addListener(new InputListener() {
+        lessBtn.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 if(numberOfPlayer>2) {
                     numberOfPlayer--;
@@ -92,7 +94,7 @@ public class NumberOfPlayerScreen implements Screen {
             }
         });
 
-        play.addListener(new InputListener() {
+        playBtn.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 
                 game.setScreen(new GameScreen(game, numberOfPlayer));
@@ -100,11 +102,10 @@ public class NumberOfPlayerScreen implements Screen {
                 return true;
             }
         });
-
     }
 
-    public void resize (int width, int height) {
-        // See below for what true means.
+    @Override
+    public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
     }
 
@@ -113,23 +114,5 @@ public class NumberOfPlayerScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void hide() {
-        dispose();
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
     }
 }

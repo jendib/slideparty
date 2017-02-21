@@ -1,11 +1,7 @@
 package com.slidingcube;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.slidingcube.screen.BaseScreen;
-import com.slidingcube.screen.GameScreen;
-import com.slidingcube.screen.HomeScreen;
 import com.slidingcube.screen.NumberOfPlayerScreen;
 
 class GdxGame extends Game {
