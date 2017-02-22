@@ -124,7 +124,7 @@ public class GameScreen extends PhysicScreen {
 
         // all players are arrived
         if (firstPlayer == null) {
-            game.setScreen(new NumberOfPlayerScreen(game));
+            game.setScreen(new ChoosePlayerScreen(game));
             return;
         }
 

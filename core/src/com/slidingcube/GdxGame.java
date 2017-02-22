@@ -2,7 +2,7 @@ package com.slidingcube;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.slidingcube.screen.NumberOfPlayerScreen;
+import com.slidingcube.screen.ChoosePlayerScreen;
 
 class GdxGame extends Game {
 	private SpriteBatch batch;
@@ -10,8 +10,8 @@ class GdxGame extends Game {
 	public void create() {
 		batch = new SpriteBatch();
 
-        // Start by NumberOfPlayerScreen
-        this.setScreen(new NumberOfPlayerScreen(this));
+        // Start by ChoosePlayerScreen
+        this.setScreen(new ChoosePlayerScreen(this));
 
     }
 
