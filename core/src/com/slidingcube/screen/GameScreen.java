@@ -12,7 +12,7 @@ import com.slidingcube.constant.ConfigConstants;
 import com.slidingcube.entity.Ground;
 import com.slidingcube.entity.Player;
 import com.slidingcube.entity.StartGate;
-import com.slidingcube.ui.UIStage;
+import com.slidingcube.ui.GameStage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class GameScreen extends PhysicScreen {
     private List<Player> playerList; // list of active players
     private StartGate startGate; // start gate blocking players at the beginning
     private int playerCount; // number of players
-    private UIStage stage; // stage for the UI
+    private GameStage stage; // stage for the UI
     private CameraHandler cameraHandler; // camera handling
     private NavigableMap<Float, Player> sortedPlayerIndex = new TreeMap<>(); // map of sorted players
 
@@ -77,7 +77,8 @@ public class GameScreen extends PhysicScreen {
         cameraHandler = new CameraHandler(camera, playerList);
 
         // UI
-        stage = new UIStage(new ScreenViewport(camera));
+        stage = new GameStage(new ScreenViewport(), playerList);
+        Gdx.input.setInputProcessor(stage);
     }
 
     /**
@@ -149,5 +150,11 @@ public class GameScreen extends PhysicScreen {
         // render the UI
         stage.act(delta);
         stage.draw();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        stage.getViewport().update(width, height, true);
     }
 }

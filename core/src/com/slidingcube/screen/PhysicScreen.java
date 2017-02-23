@@ -2,7 +2,6 @@ package com.slidingcube.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
@@ -26,7 +25,7 @@ import java.util.List;
  *
  * @author bgamard
  */
-public class PhysicScreen extends BaseScreen implements InputProcessor {
+public class PhysicScreen extends BaseScreen {
     private Box2dDebugRenderer debugRenderer; // box 2d debug renderer
     protected World world; // box 2d world
     private SpriteBatch batch; // batch projected on the camera matrix
@@ -120,7 +119,6 @@ public class PhysicScreen extends BaseScreen implements InputProcessor {
 
             }
         });
-        Gdx.input.setInputProcessor(this);
     }
 
     @Override
@@ -175,53 +173,5 @@ public class PhysicScreen extends BaseScreen implements InputProcessor {
         }
         world.dispose();
         Gdx.input.setInputProcessor(null);
-    }
-
-    // InputProcessor
-
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        boolean consumed = false;
-        for (PhysicEntity entity : entityList) {
-            if (entity.touchDown(screenX, screenY, pointer, button)) {
-                consumed = true;
-            }
-        }
-        return consumed;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
     }
 }

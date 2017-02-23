@@ -10,7 +10,7 @@ public class ConfigConstants {
         // private class
     }
 
-    public static final boolean DEBUG = true; // debug mode
+    public static final boolean DEBUG = false; // debug mode
     public static final int COUNTDOWN = 6000; // countdown timer in milliseconds
 
     public static float GRAVITY = -20f; // world gravity in m/s²

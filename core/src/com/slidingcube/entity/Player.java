@@ -39,7 +39,7 @@ public class Player extends PhysicEntity {
     private Label label; // Index label
 
     private transient Vector2 helpForceVector = new Vector2(); // Help force vector
-    private transient Vector2 labelPositionVector = new Vector2(2f, - 3f); // Position of the label
+    private transient Vector2 positionVector = new Vector2(); // Position of the label
 
     /**
      * Create a new player.
@@ -103,7 +103,7 @@ public class Player extends PhysicEntity {
         effect.allowCompletion();
 
         // player sprite
-        sprite = new Box2DSprite(new Texture(Gdx.files.internal("box.png")));
+        sprite = new Box2DSprite(new Texture(Gdx.files.internal("box.jpg")));
 
         // label
         Label.LabelStyle label1Style = new Label.LabelStyle();
@@ -177,13 +177,13 @@ public class Player extends PhysicEntity {
         float sqrtVelocity = velocity.len2();
         body.applyForceToCenter(velocity.nor().scl(- 2f * sqrtVelocity), true);
 
-        // render the sprite
-        // sprite.draw(batch, body);
-
         // render the label
-        Vector2 position = body.getWorldPoint(labelPositionVector);
+        Vector2 position = body.getWorldPoint(positionVector);
         label.setPosition(position.x - 4.5f, position.y);
         label.draw(batch, 1f);
+
+        // render the sprite
+        sprite.draw(batch, position.x, position.y, 5f, 6.4f, body.getAngle());
 
         // render the effect
         if (groundContactPosition != null) {
@@ -192,24 +192,9 @@ public class Player extends PhysicEntity {
         }
     }
 
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        // TODO GameScreen should handle touch events
-        boolean applyForce = false;
-        int width = Gdx.graphics.getWidth();
-        int height = Gdx.graphics.getHeight();
-        if (screenX < width / 2 && screenY < height / 2 && index == 0) {
-            applyForce = true;
-        } else if (screenX > width / 2 && screenY < 500 && index == 1) {
-            applyForce = true;
-        } else if (screenX < width / 2 && screenY > 500 && index == 2) {
-            applyForce = true;
-        } else if (screenX > width / 2 && screenY > 500 && index == 3) {
-            applyForce = true;
-        }
-
+    public boolean jump() {
         long now = TimeUtils.millis();
-        if (applyForce && footContactCount > 0 && lastJumpTime + ConfigConstants.JUMP_INTERVAL < now) {
+        if (footContactCount > 0 && lastJumpTime + ConfigConstants.JUMP_INTERVAL < now) {
             lastJumpTime = now;
 
             // the player jump
@@ -221,7 +206,8 @@ public class Player extends PhysicEntity {
                 entity.getBody().applyLinearImpulse(new Vector2(0, ConfigConstants.JUMP_PUSH),
                         entity.getBody().getWorldCenter(), true);
             }*/
+            return true;
         }
-        return applyForce;
+        return false;
     }
 }
