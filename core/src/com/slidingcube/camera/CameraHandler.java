@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.slidingcube.constant.ConfigConstants;
+import com.slidingcube.entity.Ground;
 import com.slidingcube.entity.Player;
 
 import java.util.List;
@@ -14,17 +15,20 @@ import java.util.List;
  * @author bgamard
  */
 public class CameraHandler {
-    private OrthographicCamera camera; // Scene camera
-    private List<Player> playerList; // List of active players
+    private OrthographicCamera camera; // scene camera
+    private List<Player> playerList; // list of active players
+    private Ground ground; // the ground
 
     /**
      * Create a new camera handler.
      *
      * @param camera Scene camera
+     * @param ground The ground
      * @param playerList List of players
      */
-    public CameraHandler(OrthographicCamera camera, List<Player> playerList) {
+    public CameraHandler(OrthographicCamera camera, Ground ground, List<Player> playerList) {
         this.camera = camera;
+        this.ground = ground;
         this.playerList = playerList;
     }
 
@@ -33,7 +37,6 @@ public class CameraHandler {
      */
     public void update() {
         // camera positioned in the middle on all players
-        // TODO bound camera to scene (x > 0 && x < ground_width)
         float sumX = 0;
         float sumY = 0;
         for (Player player : playerList) {
@@ -57,6 +60,15 @@ public class CameraHandler {
             camera.viewportWidth = height * (1 / aspectRatio);
             camera.viewportHeight = height;
         }
+
+        // constrain the camera viewport to the ground width
+        if (camera.position.x - camera.viewportWidth / 2 < 0) {
+            camera.position.x = camera.viewportWidth / 2;
+        }
+        if (camera.position.x + camera.viewportWidth / 2 + 1 > ground.getWidth()) {
+            camera.position.x = ground.getWidth() - camera.viewportWidth / 2 - 1;
+        }
+
         camera.update();
     }
 

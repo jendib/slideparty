@@ -162,4 +162,13 @@ public class Ground extends PhysicEntity {
         }
         return line[position];
     }
+
+    /**
+     * Returns the width of the ground.
+     *
+     * @return Width
+     */
+    public float getWidth() {
+        return line[line.length - 2];
+    }
 }

@@ -74,7 +74,7 @@ public class GameScreen extends PhysicScreen {
         addEntity(startGate);
 
         // camera handling
-        cameraHandler = new CameraHandler(camera, playerList);
+        cameraHandler = new CameraHandler(camera, ground, playerList);
 
         // UI
         stage = new GameStage(new ScreenViewport(), playerList);
