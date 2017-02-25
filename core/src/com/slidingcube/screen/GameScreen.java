@@ -123,6 +123,9 @@ public class GameScreen extends PhysicScreen {
             }
         }
 
+        // TODO Change me
+        stage.startEndSequence(sortedPlayerIndex.values());
+
         // all players are arrived
         if (firstPlayer == null) {
             game.setScreen(new ChoosePlayerScreen(game));

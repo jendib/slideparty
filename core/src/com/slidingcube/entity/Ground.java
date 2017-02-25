@@ -133,6 +133,7 @@ public class Ground extends PhysicEntity {
         Texture texture = new Texture(Gdx.files.internal("ground.png"));
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.MirroredRepeat);
         TextureRegion textureRegion = new TextureRegion(texture);
+        // TODO comppute vertices manually for performance
         polySprite = new RepeatablePolygonSprite();
         polySprite.setPolygon(textureRegion, this.line, 40f); // ground texture density
     }

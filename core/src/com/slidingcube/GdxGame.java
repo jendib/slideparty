@@ -4,7 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.slidingcube.screen.ChoosePlayerScreen;
 
-class GdxGame extends Game {
+public class GdxGame extends Game {
 	private SpriteBatch batch;
 
 	public void create() {

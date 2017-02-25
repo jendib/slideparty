@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.slidingcube.constant.ConfigConstants;
 import com.slidingcube.entity.Player;
 
+import java.util.Collection;
 import java.util.List;
 
 import static com.badlogic.gdx.math.Interpolation.swingIn;
@@ -130,6 +131,15 @@ public class GameStage extends Stage {
      */
     public boolean isCountdownEnded() {
         return TimeUtils.millis() - startTime > ConfigConstants.COUNTDOWN;
+    }
+
+    /**
+     * Start the ending sequence.
+     *
+     * @param playerList Ordered player list
+     */
+    public void startEndSequence(Collection<Player> playerList) {
+
     }
 
     @Override
