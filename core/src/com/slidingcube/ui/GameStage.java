@@ -1,5 +1,6 @@
 package com.slidingcube.ui;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -18,16 +21,22 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.slidingcube.constant.ConfigConstants;
 import com.slidingcube.entity.Player;
+import com.slidingcube.screen.ChoosePlayerScreen;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static com.badlogic.gdx.math.Interpolation.smooth2;
 import static com.badlogic.gdx.math.Interpolation.swingIn;
 import static com.badlogic.gdx.math.Interpolation.swingOut;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveToAligned;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.removeActor;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.scaleBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 /**
@@ -39,6 +48,14 @@ public class GameStage extends Stage {
     private long startTime = 0; // start time of the game
     private Label debugLabel; // debug label
     private Label startLabel; // countdown label
+    private boolean endSequenceStarted = false; // is the end sequence started
+
+    // player textures
+    private List<Texture> playerTextureList;
+    private Drawable replayBtnDrawable = new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("ui/again-btn.png"))));
+
+    // player buttons
+    private List<Button> playerButton;
 
     /**
      * Create a new stage.
@@ -47,6 +64,13 @@ public class GameStage extends Stage {
      */
     public GameStage(Viewport viewport, final List<Player> playerList) {
         super(viewport);
+
+        // player textures
+        playerTextureList = new ArrayList<>();
+        playerTextureList.add(new Texture(Gdx.files.internal("players/punk.png")));
+        playerTextureList.add(new Texture(Gdx.files.internal("players/boule.png")));
+        playerTextureList.add(new Texture(Gdx.files.internal("players/robot.png")));
+        playerTextureList.add(new Texture(Gdx.files.internal("players/monster.png")));
 
         // countdown label
         Label.LabelStyle startStyle = new Label.LabelStyle();
@@ -59,6 +83,7 @@ public class GameStage extends Stage {
         addActor(startLabel);
 
         // player controls
+        playerButton = new ArrayList<>();
         Drawable jumpBtnDrawable = new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("ui/jump-btn.png"))));
         for (final Player player : playerList) {
             // create the jump button
@@ -80,6 +105,7 @@ public class GameStage extends Stage {
                     break;
             }
             addActor(jumpBtn);
+            playerButton.add(jumpBtn);
 
             // jump on touch
             jumpBtn.addListener(new InputListener() {
@@ -136,10 +162,67 @@ public class GameStage extends Stage {
     /**
      * Start the ending sequence.
      *
+     * @param game Game
      * @param playerList Ordered player list
      */
-    public void startEndSequence(Collection<Player> playerList) {
+    public void startEndSequence(final Game game, Collection<Player> playerList) {
+        if (endSequenceStarted) {
+            return;
+        }
+        endSequenceStarted = true;
 
+        // remove buttons
+        for (Button button : playerButton) {
+            button.addAction(sequence(alpha(0f, 0.1f), removeActor()));
+        }
+
+        // replay button
+        ImageButton replayBtn = new ImageButton(replayBtnDrawable);
+        replayBtn.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 4, Align.center);
+        replayBtn.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(new ChoosePlayerScreen(game));
+                return true;
+            }
+        });
+        replayBtn.addAction(sequence(
+            alpha(0),
+            delay(4),
+            alpha(1, 0.3f, smooth2)
+        ));
+        addActor(replayBtn);
+
+        // show the player ranking
+        int i = 0;
+        for (Player player : playerList) {
+            Image image = new Image(playerTextureList.get(player.getIndex()));
+            addActor(image);
+            switch(player.getIndex()) {
+                case 0:
+                    image.setPosition(0, 0);
+                    break;
+                case 1:
+                    image.setPosition(Gdx.graphics.getWidth(), 0);
+                    break;
+                case 2:
+                    image.setPosition(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                    break;
+                case 3:
+                    image.setPosition(0, Gdx.graphics.getHeight());
+                    break;
+            }
+            image.setScale(0f);
+            image.addAction(sequence(
+                delay(i),
+                parallel(
+                    scaleBy(1, 1, 3, smooth2),
+                    moveToAligned(i * Gdx.graphics.getWidth() / 4 + Gdx.graphics.getWidth() / 8,
+                            Gdx.graphics.getHeight() / 2, Align.center, 3, smooth2)
+                )
+            ));
+            i++;
+        }
     }
 
     @Override

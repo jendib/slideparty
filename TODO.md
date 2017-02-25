@@ -1,0 +1,1 @@
+- Use texture packing: https://github.com/libgdx/libgdx/wiki/Texture-packer

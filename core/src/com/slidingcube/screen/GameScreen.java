@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.slidingcube.background.ParallaxBackground;
 import com.slidingcube.background.ParallaxLayer;
@@ -123,19 +124,18 @@ public class GameScreen extends PhysicScreen {
             }
         }
 
-        // TODO Change me
-        stage.startEndSequence(sortedPlayerIndex.values());
-
-        // all players are arrived
         if (firstPlayer == null) {
-            game.setScreen(new ChoosePlayerScreen(game));
-            return;
-        }
-
-        // help the latest players
-        for (Map.Entry<Float, Player> entry : sortedPlayerIndex.entrySet()) {
-            Player player = entry.getValue();
-            player.setHelpForce((firstPlayer.getPosition().x - entry.getKey()) * ConfigConstants.HELP_FORCE);
+            // all players are arrived
+            for (Player player : playerList) {
+                player.getBody().setType(BodyDef.BodyType.StaticBody);
+            }
+            stage.startEndSequence(game, sortedPlayerIndex.values());
+        } else {
+            // help the latest players
+            for (Map.Entry<Float, Player> entry : sortedPlayerIndex.entrySet()) {
+                Player player = entry.getValue();
+                player.setHelpForce((firstPlayer.getPosition().x - entry.getKey()) * ConfigConstants.HELP_FORCE);
+            }
         }
 
         // the first drawn frame is the game start
