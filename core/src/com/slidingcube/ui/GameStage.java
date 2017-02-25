@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -67,10 +68,10 @@ public class GameStage extends Stage {
 
         // player textures
         playerTextureList = new ArrayList<>();
-        playerTextureList.add(new Texture(Gdx.files.internal("players/punk.png")));
-        playerTextureList.add(new Texture(Gdx.files.internal("players/boule.png")));
-        playerTextureList.add(new Texture(Gdx.files.internal("players/robot.png")));
-        playerTextureList.add(new Texture(Gdx.files.internal("players/monster.png")));
+        playerTextureList.add(new Texture(Gdx.files.internal("players/portrait.png")));
+        playerTextureList.add(new Texture(Gdx.files.internal("players/portrait.png")));
+        playerTextureList.add(new Texture(Gdx.files.internal("players/portrait.png")));
+        playerTextureList.add(new Texture(Gdx.files.internal("players/portrait.png")));
 
         // countdown label
         Label.LabelStyle startStyle = new Label.LabelStyle();
@@ -196,31 +197,48 @@ public class GameStage extends Stage {
         // show the player ranking
         int i = 0;
         for (Player player : playerList) {
+            Group group = new Group();
+            addActor(group);
+
+            // player portrait
             Image image = new Image(playerTextureList.get(player.getIndex()));
-            addActor(image);
+            image.setPosition(- image.getWidth() / 2, - image.getHeight() / 2);
+            group.addActor(image);
+
+            // add position label
+            Label.LabelStyle style = startLabel.getStyle();
+            Label label = new Label(String.valueOf(i + 1), style);
+            label.setSize(image.getWidth(), image.getHeight());
+            label.setFontScale(0.6f);
+            label.setPosition(- image.getWidth() / 2, - image.getHeight() / 2);
+            label.setAlignment(Align.center);
+            group.addActor(label);
+
+            // position and animation
             switch(player.getIndex()) {
                 case 0:
-                    image.setPosition(0, 0);
+                    group.setPosition(0, 0);
                     break;
                 case 1:
-                    image.setPosition(Gdx.graphics.getWidth(), 0);
+                    group.setPosition(Gdx.graphics.getWidth(), 0);
                     break;
                 case 2:
-                    image.setPosition(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                    group.setPosition(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
                     break;
                 case 3:
-                    image.setPosition(0, Gdx.graphics.getHeight());
+                    group.setPosition(0, Gdx.graphics.getHeight());
                     break;
             }
-            image.setScale(0f);
-            image.addAction(sequence(
+            group.setScale(0f);
+            group.addAction(sequence(
                 delay(i),
                 parallel(
-                    scaleBy(1, 1, 3, smooth2),
+                    scaleBy(1 - i / 10f, 1 - i / 10f, 3, smooth2),
                     moveToAligned(i * Gdx.graphics.getWidth() / 4 + Gdx.graphics.getWidth() / 8,
-                            Gdx.graphics.getHeight() / 2, Align.center, 3, smooth2)
+                        Gdx.graphics.getHeight() / 2, Align.center, 3, smooth2)
                 )
             ));
+
             i++;
         }
     }
