@@ -33,10 +33,12 @@ import static com.badlogic.gdx.math.Interpolation.swingIn;
 import static com.badlogic.gdx.math.Interpolation.swingOut;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.alpha;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveToAligned;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.removeActor;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.scaleBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
@@ -195,7 +197,7 @@ public class GameStage extends Stage {
         addActor(replayBtn);
 
         // show the player ranking
-        int i = 0;
+        int i = 3;
         for (Player player : playerList) {
             Group group = new Group();
             addActor(group);
@@ -236,10 +238,11 @@ public class GameStage extends Stage {
                     scaleBy(1 - i / 10f, 1 - i / 10f, 3, smooth2),
                     moveToAligned(i * Gdx.graphics.getWidth() / 4 + Gdx.graphics.getWidth() / 8,
                         Gdx.graphics.getHeight() / 2, Align.center, 3, smooth2)
-                )
+                ),
+                forever(sequence(rotateTo(10, 0.5f, smooth2), rotateTo(-10, 0.5f, smooth2)))
             ));
 
-            i++;
+            i--;
         }
     }
 

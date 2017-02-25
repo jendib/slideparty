@@ -130,6 +130,7 @@ public class GameScreen extends PhysicScreen {
                 player.getBody().setType(BodyDef.BodyType.StaticBody);
             }
             stage.startEndSequence(game, sortedPlayerIndex.values());
+            cameraHandler.setEndMode();
         } else {
             // help the latest players
             for (Map.Entry<Float, Player> entry : sortedPlayerIndex.entrySet()) {
