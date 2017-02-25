@@ -1,10 +1,9 @@
-package com.slidingcube;
+package com.slideparty;
 
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.slidingcube.GdxGame;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override

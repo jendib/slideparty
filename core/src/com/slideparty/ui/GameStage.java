@@ -1,4 +1,4 @@
-package com.slidingcube.ui;
+package com.slideparty.ui;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -20,9 +20,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.slidingcube.constant.ConfigConstants;
-import com.slidingcube.entity.Player;
-import com.slidingcube.screen.ChoosePlayerScreen;
+import com.slideparty.constant.ConfigConstants;
+import com.slideparty.entity.Player;
+import com.slideparty.screen.ChoosePlayerScreen;
 
 import java.util.ArrayList;
 import java.util.Collection;

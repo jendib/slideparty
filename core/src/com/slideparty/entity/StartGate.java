@@ -1,4 +1,4 @@
-package com.slidingcube.entity;
+package com.slideparty.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.slidingcube.constant.ConfigConstants;
+import com.slideparty.constant.ConfigConstants;
 
 import net.dermetfan.gdx.graphics.g2d.Box2DSprite;
 

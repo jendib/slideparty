@@ -1,4 +1,4 @@
-package com.slidingcube.entity;
+package com.slideparty.entity;
 
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

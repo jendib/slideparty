@@ -1,8 +1,8 @@
-package com.slidingcube;
+package com.slideparty;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.slidingcube.screen.ChoosePlayerScreen;
+import com.slideparty.screen.ChoosePlayerScreen;
 
 public class GdxGame extends Game {
 	private SpriteBatch batch;

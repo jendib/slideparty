@@ -1,4 +1,4 @@
-package com.slidingcube.screen;
+package com.slideparty.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;

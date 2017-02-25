@@ -18,7 +18,7 @@ android {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
     defaultConfig {
-        applicationId "com.slidingcube"
+        applicationId "com.slideparty"
         minSdkVersion 14
         targetSdkVersion 24
     }
@@ -71,5 +71,5 @@ task run(type: Exec) {
     }
 
     def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.slidingcube/com.slidingcube.AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.slideparty/com.slideparty.AndroidLauncher'
 }

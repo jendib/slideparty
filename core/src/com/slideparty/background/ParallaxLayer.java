@@ -1,4 +1,4 @@
-package com.slidingcube.background;
+package com.slideparty.background;
 
 import com.badlogic.gdx.graphics.Texture;
 

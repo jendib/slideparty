@@ -1,12 +1,12 @@
-package com.slidingcube.camera;
+package com.slideparty.camera;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.slidingcube.constant.ConfigConstants;
-import com.slidingcube.entity.Ground;
-import com.slidingcube.entity.Player;
+import com.slideparty.constant.ConfigConstants;
+import com.slideparty.entity.Ground;
+import com.slideparty.entity.Player;
 
 import java.util.List;
 

@@ -1,1 +1,1 @@
-# slidingcube
+# slideparty

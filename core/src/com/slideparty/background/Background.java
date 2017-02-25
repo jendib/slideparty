@@ -1,4 +1,4 @@
-package com.slidingcube.background;
+package com.slideparty.background;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;

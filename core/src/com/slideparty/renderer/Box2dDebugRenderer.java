@@ -1,4 +1,4 @@
-package com.slidingcube.renderer;
+package com.slideparty.renderer;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;

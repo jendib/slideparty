@@ -1,4 +1,4 @@
-package com.slidingcube.constant;
+package com.slideparty.constant;
 
 /**
  * Configuration constants.

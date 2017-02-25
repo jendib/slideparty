@@ -1,4 +1,4 @@
-package com.slidingcube.screen;
+package com.slideparty.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -6,14 +6,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.slidingcube.background.ParallaxBackground;
-import com.slidingcube.background.ParallaxLayer;
-import com.slidingcube.camera.CameraHandler;
-import com.slidingcube.constant.ConfigConstants;
-import com.slidingcube.entity.Ground;
-import com.slidingcube.entity.Player;
-import com.slidingcube.entity.StartGate;
-import com.slidingcube.ui.GameStage;
+import com.slideparty.background.ParallaxBackground;
+import com.slideparty.background.ParallaxLayer;
+import com.slideparty.camera.CameraHandler;
+import com.slideparty.constant.ConfigConstants;
+import com.slideparty.entity.Ground;
+import com.slideparty.entity.Player;
+import com.slideparty.entity.StartGate;
+import com.slideparty.ui.GameStage;
 
 import java.util.ArrayList;
 import java.util.List;

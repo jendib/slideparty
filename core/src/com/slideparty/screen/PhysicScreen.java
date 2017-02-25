@@ -1,4 +1,4 @@
-package com.slidingcube.screen;
+package com.slideparty.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -12,10 +12,10 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
-import com.slidingcube.background.Background;
-import com.slidingcube.constant.ConfigConstants;
-import com.slidingcube.entity.PhysicEntity;
-import com.slidingcube.renderer.Box2dDebugRenderer;
+import com.slideparty.background.Background;
+import com.slideparty.constant.ConfigConstants;
+import com.slideparty.entity.PhysicEntity;
+import com.slideparty.renderer.Box2dDebugRenderer;
 
 import java.util.ArrayList;
 import java.util.List;

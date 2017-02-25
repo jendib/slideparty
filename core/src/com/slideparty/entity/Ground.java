@@ -1,4 +1,4 @@
-package com.slidingcube.entity;
+package com.slideparty.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -17,7 +17,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.flowpowered.noise.model.Line;
 import com.flowpowered.noise.module.source.Perlin;
-import com.slidingcube.constant.ConfigConstants;
+import com.slideparty.constant.ConfigConstants;
 
 import java.util.Random;
 

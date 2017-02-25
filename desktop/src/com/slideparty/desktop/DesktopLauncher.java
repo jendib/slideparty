@@ -1,8 +1,8 @@
-package com.slidingcube.desktop;
+package com.slideparty.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.slidingcube.GdxGame;
+import com.slideparty.GdxGame;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {

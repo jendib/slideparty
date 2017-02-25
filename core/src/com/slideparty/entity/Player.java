@@ -1,4 +1,4 @@
-package com.slidingcube.entity;
+package com.slideparty.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -19,7 +19,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.slidingcube.constant.ConfigConstants;
+import com.slideparty.constant.ConfigConstants;
 
 import net.dermetfan.gdx.graphics.g2d.Box2DSprite;
 
