@@ -31,7 +31,7 @@ public class ChoosePlayerScreen extends BaseScreen {
     private SpriteDrawable playDownSprite = new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("playDown.png"))));
 
     /**
-     * Create a new game screen.
+     * Create a new choose player screen.
      *
      * @param game Calling game
      */
