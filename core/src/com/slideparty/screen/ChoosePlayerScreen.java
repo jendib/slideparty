@@ -23,10 +23,10 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class ChoosePlayerScreen extends BaseScreen {
     private Stage stage;
     private int numberOfPlayer = 4;
-    private SpriteDrawable punkSprite = new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("players/punk.png"))));
-    private SpriteDrawable bouleSprite = new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("players/boule.png"))));
-    private SpriteDrawable robotSprite = new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("players/robot.png"))));
-    private SpriteDrawable monsterSprite = new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("players/monster.png"))));
+    private SpriteDrawable albinosSprite = new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("players/hamster_albinos.png"))));
+    private SpriteDrawable gothSprite = new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("players/hamster_goth.png"))));
+    private SpriteDrawable normalSprite = new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("players/hamster_normal.png"))));
+    private SpriteDrawable punkSprite = new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("players/hamster_punk.png"))));
     private SpriteDrawable playUpSprite = new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("playUp.png"))));
     private SpriteDrawable playDownSprite = new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("playDown.png"))));
 
@@ -52,25 +52,25 @@ public class ChoosePlayerScreen extends BaseScreen {
                 false, true);
 
         //Player 1
-        final ImageButton player1BtnImage = new ImageButton(punkSprite);
+        final ImageButton player1BtnImage = new ImageButton(albinosSprite);
         player1BtnImage.setSize(Gdx.graphics.getWidth()/3,Gdx.graphics.getHeight()/3);
         player1BtnImage.setPosition(0,0);
         stage.addActor(player1BtnImage);
 
         //Player 2
-        final ImageButton player2BtnImage = new ImageButton(bouleSprite);
+        final ImageButton player2BtnImage = new ImageButton(gothSprite);
         player2BtnImage.setSize(Gdx.graphics.getWidth()/3,Gdx.graphics.getHeight()/3);
         player2BtnImage.setPosition(Gdx.graphics.getWidth()*2/3,0);
         stage.addActor(player2BtnImage);
 
         //Player 3
-        final ImageButton player3BtnImage = new ImageButton(robotSprite);
+        final ImageButton player3BtnImage = new ImageButton(normalSprite);
         player3BtnImage.setSize(Gdx.graphics.getWidth()/3,Gdx.graphics.getHeight()/3);
         player3BtnImage.setPosition(Gdx.graphics.getWidth()*2/3,Gdx.graphics.getHeight()*2/3);
         stage.addActor(player3BtnImage);
 
         //Player 4
-        final ImageButton player4BtnImage = new ImageButton(monsterSprite);
+        final ImageButton player4BtnImage = new ImageButton(punkSprite);
         player4BtnImage.setSize(Gdx.graphics.getWidth()/3,Gdx.graphics.getHeight()/3);
         player4BtnImage.setPosition(0,Gdx.graphics.getHeight()*2/3);
         stage.addActor(player4BtnImage);
@@ -139,14 +139,14 @@ public class ChoosePlayerScreen extends BaseScreen {
 
     public void switchPlayer(ImageButton btn){
 
-        if(btn.getStyle().imageUp.equals(punkSprite)){
-            btn.getStyle().imageUp = bouleSprite;
-        }else if(btn.getStyle().imageUp.equals(bouleSprite)){
-            btn.getStyle().imageUp = robotSprite;
-        }else if(btn.getStyle().imageUp.equals(robotSprite)){
-            btn.getStyle().imageUp = monsterSprite;
-        }else if(btn.getStyle().imageUp.equals(monsterSprite)){
+        if(btn.getStyle().imageUp.equals(albinosSprite)){
+            btn.getStyle().imageUp = gothSprite;
+        }else if(btn.getStyle().imageUp.equals(gothSprite)){
+            btn.getStyle().imageUp = normalSprite;
+        }else if(btn.getStyle().imageUp.equals(normalSprite)){
             btn.getStyle().imageUp = punkSprite;
+        }else if(btn.getStyle().imageUp.equals(punkSprite)){
+            btn.getStyle().imageUp = albinosSprite;
         }
 
     }

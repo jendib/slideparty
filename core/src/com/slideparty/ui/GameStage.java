@@ -70,10 +70,10 @@ public class GameStage extends Stage {
 
         // player textures
         playerTextureList = new ArrayList<>();
-        playerTextureList.add(new Texture(Gdx.files.internal("players/portrait.png")));
-        playerTextureList.add(new Texture(Gdx.files.internal("players/portrait.png")));
-        playerTextureList.add(new Texture(Gdx.files.internal("players/portrait.png")));
-        playerTextureList.add(new Texture(Gdx.files.internal("players/portrait.png")));
+        playerTextureList.add(new Texture(Gdx.files.internal("players/hamster_albinos.png")));
+        playerTextureList.add(new Texture(Gdx.files.internal("players/hamster_goth.png")));
+        playerTextureList.add(new Texture(Gdx.files.internal("players/hamster_normal.png")));
+        playerTextureList.add(new Texture(Gdx.files.internal("players/hamster_punk.png")));
 
         // countdown label
         Label.LabelStyle startStyle = new Label.LabelStyle();

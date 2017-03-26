@@ -1,9 +1,7 @@
 package com.slideparty.entity;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -16,8 +14,6 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.slideparty.constant.ConfigConstants;
 
@@ -36,7 +32,8 @@ public class Player extends PhysicEntity {
     private ParticleEffect effect; // Ground particles effect
     private Vector2 groundContactPosition; // Contact between the player and the ground
     private Box2DSprite sprite; // Player sprite
-    private Label label; // Index label
+    private Box2DSprite ballSprite; // Ball sprite
+    private Body ballBody; // Ball body
 
     private transient Vector2 helpForceVector = new Vector2(); // Help force vector
     private transient Vector2 positionVector = new Vector2(); // Position of the label
@@ -64,7 +61,7 @@ public class Player extends PhysicEntity {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = boxShape;
         fixtureDef.density = ConfigConstants.PLAYER_DENSITY;
-        fixtureDef.friction = 0;
+        fixtureDef.friction = 0.1f;
         fixtureDef.restitution = .2f;
         body.createFixture(fixtureDef);
 
@@ -92,10 +89,12 @@ public class Player extends PhysicEntity {
         CircleShape ballShape = new CircleShape();
         ballShape.setRadius(1);
         fixtureDef.isSensor = false;
-        fixtureDef.density = 0; // the ball don't weight anything
+        fixtureDef.density = 0.1f; // the ball don't weight anything
         fixtureDef.shape = ballShape;
-        Body ball = world.createBody(bodyDef);
-        ball.createFixture(fixtureDef);
+        fixtureDef.friction = 0.1f;
+        ballBody = world.createBody(bodyDef);
+        ballBody.createFixture(fixtureDef);
+        ballBody.setFixedRotation(false);
 
         // player effect
         effect = new ParticleEffect();
@@ -105,18 +104,8 @@ public class Player extends PhysicEntity {
         // player sprite
         sprite = new Box2DSprite(new Texture(Gdx.files.internal("box.jpg")));
 
-        // label
-        Label.LabelStyle label1Style = new Label.LabelStyle();
-        label1Style.font = new BitmapFont(Gdx.files.internal("font/debug.fnt"),
-                Gdx.files.internal("font/debug.png"),
-                false, false);
-        label1Style.fontColor = Color.WHITE;
-        label = new Label(null, label1Style);
-        label.setSize(5f, 6f);
-        label.setFontScale(0.05f);
-        label.setAlignment(Align.center);
-        label.setText(Integer.toString(index + 1));
-
+        // ball sprite
+        ballSprite = new Box2DSprite(new Texture(Gdx.files.internal("players/perso_" + index + ".png")));
     }
 
     /**
@@ -177,13 +166,13 @@ public class Player extends PhysicEntity {
         float sqrtVelocity = velocity.len2();
         body.applyForceToCenter(velocity.nor().scl(- 2f * sqrtVelocity), true);
 
-        // render the label
-        Vector2 position = body.getWorldPoint(positionVector);
-        label.setPosition(position.x - 4.5f, position.y);
-        label.draw(batch, 1f);
-
         // render the sprite
+        Vector2 position = body.getWorldPoint(positionVector);
         sprite.draw(batch, position.x, position.y, 5f, 6.4f, body.getAngle());
+
+        // render the ball
+        Vector2 ballPosition = ballBody.getWorldPoint(positionVector);
+        ballSprite.draw(batch, ballPosition.x, ballPosition.y, 2.5f, 2.5f, ballBody.getAngle());
 
         // render the effect
         if (groundContactPosition != null) {
