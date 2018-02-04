@@ -52,12 +52,11 @@ public class Player extends PhysicEntity {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         // TODO Get the real ground initial position
         bodyDef.position.set(5f + 6 * index, 1000);
-        bodyDef.angularVelocity = 0;
         body = world.createBody(bodyDef);
 
         // top shape
         PolygonShape boxShape = new PolygonShape();
-        boxShape.setAsBox(2.5f, 0.3f, new Vector2(0, 3), 0);
+        boxShape.setAsBox(3f, 0.05f, new Vector2(0, 2f), 0);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = boxShape;
         fixtureDef.density = ConfigConstants.PLAYER_DENSITY;
@@ -66,19 +65,19 @@ public class Player extends PhysicEntity {
         body.createFixture(fixtureDef);
 
         // left shape
-        boxShape.setAsBox(2.7f, 0.3f, new Vector2(2.2f, 0), MathUtils.degreesToRadians * 90);
+        boxShape.setAsBox(2f, 0.05f, new Vector2(3f, 0), MathUtils.degreesToRadians * 90);
         body.createFixture(fixtureDef);
 
         // right shape
-        boxShape.setAsBox(2.7f, 0.3f, new Vector2(-2.2f, 0), MathUtils.degreesToRadians * 90);
+        boxShape.setAsBox(2f, 0.05f, new Vector2(-3f, 0), MathUtils.degreesToRadians * 90);
         body.createFixture(fixtureDef);
 
         // bottom shape
-        boxShape.setAsBox(2.5f, 0.3f, new Vector2(0, -3), 0);
+        boxShape.setAsBox(3f, 0.3f, new Vector2(0, -1.7f), 0);
         body.createFixture(fixtureDef);
 
         // player foot
-        boxShape.setAsBox(3.6f, 4.2f);
+        boxShape.setAsBox(3.5f, 2.5f);
         fixtureDef.isSensor = true;
         fixtureDef.density = 0; // the foot don't weight anything
         Fixture footFixture = body.createFixture(fixtureDef);
@@ -102,7 +101,7 @@ public class Player extends PhysicEntity {
         effect.allowCompletion();
 
         // player sprite
-        sprite = new Box2DSprite(new Texture(Gdx.files.internal("box.jpg")));
+        sprite = new Box2DSprite(new Texture(Gdx.files.internal("cage.png")));
 
         // ball sprite
         ballSprite = new Box2DSprite(new Texture(Gdx.files.internal("players/perso_" + index + ".png")));
@@ -168,7 +167,7 @@ public class Player extends PhysicEntity {
 
         // render the sprite
         Vector2 position = body.getWorldPoint(positionVector);
-        sprite.draw(batch, position.x, position.y, 5f, 6.4f, body.getAngle());
+        sprite.draw(batch, position.x, position.y, 6f, 4f, body.getAngle());
 
         // render the ball
         Vector2 ballPosition = ballBody.getWorldPoint(positionVector);

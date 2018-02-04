@@ -27,7 +27,7 @@ public class ConfigConstants {
     public static float JUMP_VERTICAL = 4000f; // vertical jump force in N
     public static float JUMP_HORIZONTAL = 4000f; // horizontal jump force in N
     public static int JUMP_INTERVAL = 400; // minimum time between 2 jumps
-    public static final float PLAYER_DENSITY = 20f; // player density
+    public static final float PLAYER_DENSITY = 49.92f; // player density
     public static final float HELP_FORCE = 0.5f; // help force multiplier
     public static float JUMP_PUSH = -500f; // downward push when a player jump on another in N
 

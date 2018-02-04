@@ -37,7 +37,7 @@ public class StartGate extends PhysicEntity {
         body.createFixture(fixtureDef);
 
         // sprite
-        sprite = new Box2DSprite(new Texture(Gdx.files.internal("startgate.jpg")));
+        sprite = new Box2DSprite(new Texture(Gdx.files.internal("trunk.png")));
     }
 
     @Override
